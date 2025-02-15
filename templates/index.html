@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="../css/Header.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Header.css') }}">
+    
+ 
+    
+    <title>Document</title>
+</head>
+<body>
+    <section id="mainhead">
+        <header>
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#news">News</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Events</button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('past_events') }}">Past Events</a>
+                        <a href="{{ url_for('upcoming_events') }}">Upcoming Events</a>
+                    </div>
+                </div>
+                <a href="#gallery">Gallery</a>
+                <a href="#contact">Contact Us</a>
+                <button class="join-button">Join our Family</button>
+            </nav>
+        </header>
+        <div id="popup" class="popup-container">
+            <div class="popup-content">
+                <p id="poppy">Are you already a part of the family?</p>
+                <button onclick="alreadyMember()">Yes</button>
+                <button onclick="notMember()">No</button>
+                <button class="close-btn" onclick="closePopup()">Close</button>
+            </div>
+        </div>
+        <section class="hero">
+            <h2>Welcome to all Konkani speakers in Australia</h2>
+            <p>Let's preserve and promote the essence of our rich Konkani heritage through events and activities.</p>
+            <div class="carousel">
+                <div class="active"></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </section>
+    </section>
+   
+   
+
+    <section class="about-section">
+        <h2 class="title">ಆಮ್ಚೆ ವಿಶಿಂ</h2>
+        <h3>About Us</h3>
+        <p class="intro">Karaval Konkan Australia is a not-for-profit community organization formed in October 2024 with an intention to unite all Konkani-speaking people from Karaval, India.</p>
+        <a href="#" class="read-more">Read More</a>
+            <div class="content">
+                <p><strong>Konkani</strong>, a unique language with a rich history of over 2000 years spoken in a small coastal region of India has today spread its fragrance around the globe thanks to our illustrious and enterprising community members that are living across the world. From the initial pioneers who went from Mangalore to Australia, the Konkani speaking community today has grown in multitudes.  As we assimilate in the local culture, it is equally important to focus our attention on a unique bond that we all share – Konkani.</p>
+            </div>
+            <div class="info-cards">
+                <div class="card">
+                    <img class="imgs" src="{{ url_for('static', filename='images/purpose_icon.png') }}" alt="Description of the image" width="60" height="60">
+                    <h4>Purpose</h4>
+                    <p>Karaval Konkans Australia aims to foster a vibrant and inclusive environment that celebrates and preserves the rich cultural heritage, language, and traditions of the Konkani people. We strive to support our members through cultural events, educational programs, and community services, promoting a sense of belonging and unity.</p>
+                </div>
+                <div class="card">
+                    <img class="imgs" src="{{ url_for('static', filename='images/vision_icon.png') }}" alt="Description of the image" width="60" height="60">
+                    <h4>Vision</h4>
+                    <p>Our vision is to build a thriving and cohesive Konkani community in Australia that is recognized for its cultural richness, mutual support, and active contribution to the multicultural fabric of the nation. We envision a future where every member feels valued, connected, and proud of their heritage, while also embracing the diverse opportunities and experiences that Australia offers.</p>
+                </div>
+                <div class="card">
+                     <img class="imgs" src="{{ url_for('static', filename='images/mission_icon.png') }}" alt="Description of the image" width="60" height="60">
+                    <h4>Mission</h4>
+                    <p>Our mission is to connect generations, empower individuals, and enrich the broader Australian society with the unique contributions of the Konkani culture. The key objectives include cultural preservation, comunity support, educational programs, social connections, volunteerism and leadership.</p>
+                </div>
+            </div>
+        </section>
+    
+    <section>
+        <div class="container1">
+            <footer class="footer">
+                <div class="footer-column">
+                    <img src="../images/2 2.png" alt="Karaval Konkans Logo">
+                    <p>Karaval Konkans Australia is a not-for-profit community organization formed in October 2024 with an intention to unite all Konkani-speaking people from Karaval India.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="mdi mdi-instagram"></i></a>
+                        <a href="#"><i class="mdi mdi-whatsapp"></i></a>
+                        <a href="#"><i class="mdi mdi-facebook"></i></a>
+                        <a href="#"><i class="mdi mdi-youtube"></i></a>
+                    </div>
+                </div>
+    
+                <div class="footer-column1">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="#">Home</a>
+                        <a href="#">About Us</a>
+                        <a href="#">News</a>
+                        <a href="#">Events</a>
+                        <a href="#">Contact Us</a>
+                </div>
+                </div>
+    
+                <div class="footer-column2">
+                    <h3>Contact Us</h3>
+                    <p>Email: <a href="mailto:info@karavalkonkans.org.au">info@karavalkonkans.org.au</a></p>
+                </div>
+    
+                <div class="copyright">
+                    © Karaval Konkans Australia Inc. All rights reserved.
+                </div>
+            </footer>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+</html>

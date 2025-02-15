@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+    <script src="../scripts/EventReg.js" defer></script>
+    <link rel="stylesheet" href="../css/EventReg.css">
+</head>
+<body>
+
+    <a href="../html/upevents.html" id="backButton">Back</a>
+
+    <div class="container">
+        <h2 id="eventName">Event Registration</h2>
+
+        <form id="registrationForm" onsubmit="submitForm(event)">
+            <input type="hidden" id="eventInput" name="event">
+
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="people">Total Number of People:</label>
+                <input type="number" id="people" name="people" min="1" required oninput="updateSubsections()">
+            </div>
+
+            <div id="subsections" style="display:none;">
+                <div class="form-group">
+                    <label for="adults">Number of Adults <span style="color: red;">*</span></label>
+                    <input type="number" id="adults" name="adults" min="1" required oninput="validatePeople()">
+                </div>
+
+                <div class="form-group">
+                    <label for="children">Number of Children</label>
+                    <input type="number" id="children" name="children" min="0" oninput="validatePeople()">
+                </div>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <div id="thankYouMessage" style="display:none; text-align: center;">
+        <h2 id="thankYouEventName">Thank you for registering!</h2>
+        <p>Check out other exciting events.</p>
+    </div>
+
+    <div id="overlay" style="display:none;"></div>
+
+</body>
+</html>

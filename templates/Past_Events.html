@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Events</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/past.css') }}">
+</head>
+<body>
+
+    <!-- Past Events Section -->
+    <section class="events past-events">
+        <div class="heading-box">
+            Past Events
+        </div>
+        <p>Experience the joy of unforgettable Konkani gatherings that celebrate culture, tradition, and unity!</p>
+        
+        <div class="event-list">
+            {% if events %}
+                {% for event in events %}
+                <div class="event-card">
+                    <img src="{{ url_for('static', filename=event[2]) }}" alt="{{ event[0] }}">
+                    <div class="event-details">
+                        <h3>{{ event[0] }}</h3>
+                        <p><strong>Description:</strong> {{ event[1] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No past events available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+</body>
+</html>

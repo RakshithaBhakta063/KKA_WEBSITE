@@ -1,0 +1,116 @@
+body{
+    font-family:'Poppins',sans-serif;
+    background-color:#f8f8f8;
+    text-align: center;
+    padding:20px;
+
+}
+.heading-box {
+    width: fit-content; /* Adjust width based on content */
+    padding: 24px 400px; /* Add spacing inside the box */
+    background-color: #ff9d4d; /* Box background color */
+    color: white; /* Text color */
+    font-size: 40px; /* Font size */
+    font-weight: bold; /* Bold text */
+    text-align: center; /* Center align text */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    display: inline-block; /* Fit to content width */
+}
+
+/* Past Events Section */
+.past-events {
+    background-color: #f8f8f8;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.past-events h2 {
+    color:#f8f8f8;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.past-events p {
+    max-width: 800px;
+    margin: 0 auto 30px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Event List - Display Events in Vertical Order */
+.event-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Individual Event Card */
+.event-card {
+    background:white;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.event-card img {
+    width: 250px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.event-details {
+    text-align: left;
+    flex: 1;
+}
+
+.event-details h3 {
+    color: #ff9d4d;
+    margin-bottom: 10px;
+}
+
+.event-details p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 5px;
+}
+
+.event-card:hover {
+    transform: scale(1.05); /* Slightly enlarges the card */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increases shadow on hover */
+}
+
+/* Button */
+.event-card .btn {
+    display: inline-block;
+    background-color: #ff9d4d;
+    color:white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.event-card .btn:hover {
+    background-color: #ff7633;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .event-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .event-card img {
+        width: 100%;
+        height: auto;
+    }
+}

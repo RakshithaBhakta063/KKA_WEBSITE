@@ -1,0 +1,108 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Navbar */
+.navbar {
+    background: #ff9d4d;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li {
+    display: inline;
+}
+
+.navbar ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Event Highlight Section */
+.event-highlight {
+    display: flex;
+    flex-wrap: wrap;
+    background: white;
+    margin: 40px auto;
+    padding: 20px;
+    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Event Image */
+.event-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+/* Event Details */
+.event-details {
+    flex: 1;
+    padding: 20px;
+}
+
+.event-details h1 {
+    color: #ff9d4d;
+    
+}
+
+.event-details p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Highlight Text */
+.highlight {
+    background: color #f8f8f8;;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Button */
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    background: #ff9d4d;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #ff7633;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .event-highlight {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .event-image img {
+        width: 100%;
+        max-width: none;
+    }
+}

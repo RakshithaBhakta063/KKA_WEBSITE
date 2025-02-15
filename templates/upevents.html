@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Konkani Events in Australia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/upevents.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="event-banner">
+            <h2 class="event-title">Upcoming Events</h2>
+        </div>
+        <p class="event-subtext">🎉 Dive into Konkani Culture!</p>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for events..." onkeyup="searchEvents()">
+        </div>
+
+        <div id="eventList">
+            {% if events %}
+                {% for event in events %}
+                <div class="event">
+                    <img src="{{ url_for('static', filename=event[2]) }}" alt="{{ event[0] }}" onclick="openModal(this.src)">
+                    <div class="event-info">
+                        <h3>{{ event[0] }}</h3>
+                        <p><strong>Description:</strong> {{ event[1] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No upcoming events available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <script src="../scripts/upevents.js"></script>
+</body>
+</html>
