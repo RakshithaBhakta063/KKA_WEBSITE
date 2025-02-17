@@ -63,3 +63,19 @@ button {
 button:hover {
     background-color: #ff7b29;
 }
+
+/* Responsive Design */
+@media (max-width: 400px) {
+    .container {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    input,
+    button {
+        font-size: 14px;
+    }
+}

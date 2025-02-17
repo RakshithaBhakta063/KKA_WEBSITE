@@ -279,4 +279,133 @@ canvas {
         margin-bottom: 20px;
         text-align: center;
     }
+    .admin-panel {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-info {
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .analytics-summary {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .analytics-card {
+        width: 100%;
+    }
+
+    .tab-button {
+        font-size: 14px;
+    }
 }
+
+@media (max-width: 768px) {
+    .chart-container {
+        width: 100%;
+    }
+
+    .container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .tab-button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    table th, table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        padding: 20px;
+        align-items: center;
+    }
+
+    .avatar-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-info p {
+        font-size: 16px;
+    }
+
+    #exportPDF {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-header {
+        padding: 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo img {
+        width: 100px;
+    }
+
+    .profile-card {
+        padding: 15px;
+    }
+
+    .profile-avatar {
+        flex: 0;
+    }
+
+    .profile-info p {
+        font-size: 14px;
+    }
+
+    .analytics-card h4 {
+        font-size: 16px;
+    }
+
+    .analytics-card p {
+        font-size: 20px;
+    }
+
+    .tab-button {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+

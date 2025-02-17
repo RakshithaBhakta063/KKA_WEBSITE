@@ -13,9 +13,10 @@ body {
     position: relative;
 }
 
+/* Container for the form */
 .container {
-    max-width: 800px; /* Increased width for larger screens */
-    width: 90%; /* Adjust to take up 90% of the available width */
+    max-width: 800px;
+    width: 90%;
     background-color: white;
     padding: 40px;
     border-radius: 12px;
@@ -24,22 +25,25 @@ body {
     box-sizing: border-box;
 }
 
+/* Heading styles */
 h2 {
     font-size: 28px;
     margin-bottom: 25px;
-    color: #ffc342; /* Changed to #CBAE11 */
+    color: #CBAE11;
     font-weight: 600;
 }
 
+/* Label styling */
 label {
     font-size: 16px;
     margin-bottom: 8px;
     color: #333;
 }
 
+/* Input fields */
 input {
     padding: 12px;
-    border: 2px solid #d4a017; /* Changed to #CBAE11 */
+    border: 2px solid #CBAE11;
     border-radius: 8px;
     margin-bottom: 15px;
     font-size: 16px;
@@ -48,12 +52,14 @@ input {
     box-sizing: border-box;
 }
 
+/* Focus effect */
 input:focus {
-    border-color: #FFAA74; /* Changed to #757500 (or a slightly lighter version if needed) */
+    border-color: #757500;
 }
 
+/* Button styles */
 button {
-    background-color: #FFB300; /* Changed to #CBAE11 */
+    background-color: #CBAE11;
     color: white;
     padding: 14px 20px;
     border: none;
@@ -65,26 +71,16 @@ button {
     box-sizing: border-box;
 }
 
-button:hover {
-    background-color: #ff7633; /* Changed to #757500 */
-}
-
+button:hover,
 button:active {
-    background-color: #ff7633; /* Changed to #757500 */
+    background-color: #757500;
 }
 
+/* Form group for spacing */
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 30px;
-        width: 95%; /* Adjust width to 95% for smaller screens */
-    }
 }
 
 /* Back button styling */
@@ -92,7 +88,7 @@ button:active {
     position: absolute;
     top: 20px;
     right: 20px;
-    background-color: #FFB300; /* Changed to #CBAE11 */
+    background-color: #CBAE11;
     color: white;
     padding: 10px 15px;
     border-radius: 8px;
@@ -102,12 +98,9 @@ button:active {
     transition: background-color 0.3s ease;
 }
 
-#backButton:hover {
-    background-color: #ff7633; /* Changed to #757500 */
-}
-
+#backButton:hover,
 #backButton:active {
-    background-color: #ff7633; /* Changed to #757500 */
+    background-color: #757500;
 }
 
 /* Thank You message styling */
@@ -123,19 +116,14 @@ button:active {
 }
 
 #thankYouMessage h2 {
-    color: #FFAA74; /* Changed to #757500 */
+    color: #757500;
 }
 
 #thankYouMessage p {
     font-size: 18px;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Overlay styling for background blur */
+/* Overlay for background blur */
 #overlay {
     display: none;
     position: absolute;
@@ -146,4 +134,80 @@ button:active {
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
     backdrop-filter: blur(8px);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 700px;
+        padding: 35px;
+    }
+
+    h2 {
+        font-size: 26px;
+    }
+
+    input,
+    button {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 30px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    button {
+        padding: 12px;
+    }
+
+    #backButton {
+        top: 15px;
+        right: 15px;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 25px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    input {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    #backButton {
+        top: 10px;
+        right: 10px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    #thankYouMessage p {
+        font-size: 16px;
+    }
 }

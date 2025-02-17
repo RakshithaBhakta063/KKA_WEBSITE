@@ -12,25 +12,25 @@
 
 header {
     background: rgba(0, 0, 0);
+    top:0;
     display: flex;
+    position: fixed;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2rem;
-    position: fixed;
     width: 100%;
-    top: 0;
     z-index: 1000;
-    height: 70px;
+    height: 100px;
 }
 
 header img {
-    height: 120px;
-    width: 170px;
+    height: auto;  /* Maintain aspect ratio */
+    width: 100%;   /* Adjust to container width */
+    max-width: 170px; /* Prevent it from getting too large */
     margin-right: auto;
 }
 
 nav {
-    padding-left: 4rem;
+    padding-left: 0rem;
     display: flex;
     gap: 6rem;
     flex-grow: 1;
@@ -68,7 +68,7 @@ nav a:hover {
 .hero {
     background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent overlay */
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Center content on smaller screens */
     align-items: center;
     flex-direction: column;
     text-align: center;
@@ -89,15 +89,48 @@ nav a:hover {
     line-height: 1.5;
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero {
+        padding-top: 60px; /* Adjust the padding for smaller screens */
+    }
+
+    .hero h2 {
+        font-size: 2rem; /* Reduce the font size for smaller screens */
+    }
+
+    .hero p {
+        font-size: 1.2rem; /* Adjust the paragraph font size */
+        max-width: 80%; /* Increase width for smaller screens */
+        margin-top: 20px; /* Reduce margin */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h2 {
+        font-size: 1.6rem; /* Further reduce font size on very small screens */
+    }
+
+    .hero p {
+        font-size: 1rem; /* Reduce font size even further */
+        max-width: 90%; /* Further increase width for very small screens */
+    }
+}
+
+
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 10px;
     }
 
     nav {
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 1rem;
+    }
+    nav a {
+        font-size: 14px;
     }
 
     .hero h2 {
@@ -111,6 +144,9 @@ nav a:hover {
     .join-button {
         padding: 0.4rem 0.8rem;
         font-size: 0.9rem;
+    }
+    .join-button {
+        margin-top: 15px;
     }
 }
 
@@ -166,7 +202,8 @@ nav a:hover {
     color: #000000;
     padding: 50px 20px;
     text-align: center;
-    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -189,7 +226,7 @@ nav a:hover {
     line-height: 1.7;
     font-family: "Arial", sans-serif;
     
-}
+
 
 .btn {
     display: inline-block;
@@ -265,6 +302,27 @@ nav a:hover {
 
 .about-section .read-more:hover {
     background: #b8860b; /* Darker gold */
+}
+
+}/* Responsive Design */
+@media (max-width: 768px) {
+    .info-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 90%;
+        margin: 10px 0;
+    }
+
+    .about-section .title {
+        font-size: 1.5rem;
+    }
+
+    .about-section .intro {
+        font-size: 1rem;
+    }
 }
 
 /* Content Styling */

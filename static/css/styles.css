@@ -171,12 +171,96 @@ button:hover {
 #joinBtn:hover {
     background-color: #ffc342;
 }
+/* login page back-button */
+.back-home {
+    text-align: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.back-home button {
+    background-color: #ffc342;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: block;  /* Ensures it's below */
+    margin: 10px auto; /* Centers it */
+}
+
+.back-home button:hover {
+    background-color: #ffc342;
+}
+
 
 /* Responsive Design */
+@media (max-width: 768px) {
+    /* Adjust form container */
+    .registration-container {
+        width: 80%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    /* Buttons and Inputs */
+    button, input, select, textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .crystal-ball {
+        font-size: 1rem;
+        padding: 40px;
+    }
+
+    .extra-links a {
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 600px) {
     .registration-container {
         width: 90%;
-        padding: 20px;
+        padding: 15px;
+    }
+
+    /* Adjust heading size */
+    h1 {
+        font-size: 28px;
+    }
+
+    /* Adjust button sizes */
+    button, #joinBtn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    /* Form fields */
+    input, select, textarea {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    /* Popup adjustments */
+    .popup-content {
+        padding: 30px;
+        width: 90%;
+    }
+
+    .crystal-ball {
+        font-size: 1rem;
+        padding: 40px;
+    }
+
+    /* Buttons */
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
     }
 }
 
@@ -185,7 +269,7 @@ button:hover {
 #loginForm,
 #forgotPasswordForm,
 #resetPasswordForm {
-    width: 415px;
+    width: 100%;
 }
 
 /* Dashboard Container */
@@ -198,7 +282,12 @@ button:hover {
     text-align: center;
     margin: 0 auto; /* Center the container */
 }
-
+@media (max-width: 900px) {
+    .dashboard-container {
+        width: 80%;
+        padding: 15px;
+    }
+}
 /* Family Member Entry */
 .member-entry {
     display: flex;
@@ -237,6 +326,11 @@ button:hover {
     margin: 0 auto; /* Center the container horizontally */
     padding: 20px;
     text-align: center;
+}
+@media (max-width: 900px) {
+    .popup-container {
+        width: 80%;
+    }
 }
 
 /* Popup Style */
@@ -300,14 +394,15 @@ button[onclick="addMember()"] {
 }
 
 .login-container {
-    max-width: 420px;
-    width: 100%;
+    max-width: 50%;
+    width: 50%;
     background: #fff;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
+
 
 form {
     display: flex;
@@ -323,7 +418,7 @@ form {
 }
 
 .form-container{
-    max-width: 550px;
+    max-width: 100%;
     width: 100%;
     background: #fff;
     padding: 30px;
@@ -333,7 +428,7 @@ form {
 }
 
 #registerForm{
-    width:530px;
+    width:100%;
     padding-left:10px;
 }
 
@@ -361,13 +456,19 @@ form {
 .btn:hover {
     background-color: #ffc342;
 }
-/* Responsive Design */
+/* Responsive Styles for forms */
 @media (max-width: 600px) {
-    .registration-container {
-        width: 90%;
+    .login-container, .form-container {
         padding: 20px;
     }
-    .btn-container {
-        bottom: 10px;
+
+    #registerSubmit {
+        width: 100%;
+        margin: 0;
+    }
+
+    #loginSubmit {
+        width: 100%;
+        margin: 0;
     }
 }

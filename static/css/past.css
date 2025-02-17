@@ -102,15 +102,75 @@ body{
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .heading-box {
+        padding: 24px 200px;
+        font-size: 35px;
+    }
+
+    .event-card {
+        width: 90%;
+    }
+}
+
 @media (max-width: 768px) {
+    .heading-box {
+        padding: 24px 20px;
+        font-size: 30px;
+    }
+
     .event-card {
         flex-direction: column;
         align-items: center;
         text-align: center;
+        width: 100%;
     }
 
     .event-card img {
         width: 100%;
         height: auto;
+    }
+
+    .event-details h3 {
+        font-size: 1.2rem;
+    }
+
+    .event-details p {
+        font-size: 1rem;
+    }
+
+    .event-card .btn {
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .heading-box {
+        padding: 24px 15px;
+        font-size: 24px;
+    }
+
+    .event-card {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .event-card img {
+        width: 100%;
+        height: auto;
+    }
+
+    .event-details h3 {
+        font-size: 1rem;
+    }
+
+    .event-details p {
+        font-size: 0.9rem;
+    }
+
+    .event-card .btn {
+        font-size: 1rem;
+        padding: 12px 20px;
     }
 }
