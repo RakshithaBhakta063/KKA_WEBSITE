@@ -124,36 +124,6 @@ function createPieChart(canvasId, title, data) {
     });
 }
 
-//extra
-
-document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const navMenu = document.querySelector("nav");
-
-    if (menuToggle) {
-        menuToggle.addEventListener("click", function () {
-            navMenu.classList.toggle("active");
-        });
-    }
-
-    // Prevent dropdown from closing when clicking inside it
-    const dropdown = document.querySelector(".dropdown");
-    if (dropdown) {
-        dropdown.addEventListener("click", function (event) {
-            event.stopPropagation();
-        });
-    }
-
-    // Close the menu when clicking outside
-    document.addEventListener("click", function (event) {
-        if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
-            navMenu.classList.remove("active");
-        }
-    });
-});
-
-
-//extra
 
 document.getElementById("exportPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;

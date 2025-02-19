@@ -179,6 +179,23 @@ Search Bar
     cursor: pointer;
 }
 
+.register-btn {
+    display: inline-block;
+    background-color: #ff9d4d;
+    color: #201d18;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #f57c00;
+    color: white;
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {

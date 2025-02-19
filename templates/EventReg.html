@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Registration</title>
-    <script src="../scripts/EventReg.js" defer></script>
-    <link rel="stylesheet" href="../css/EventReg.css">
+    <script src="{{ url_for('static', filename='scripts/EventReg.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/EventReg.css') }}">
+
 </head>
 <body>
 
@@ -14,8 +15,9 @@
     <div class="container">
         <h2 id="eventName">Event Registration</h2>
 
-        <form id="registrationForm" onsubmit="submitForm(event)">
-            <input type="hidden" id="eventInput" name="event">
+        <form id="registrationForm" method="POST" action="{{ url_for('event_register', event_id=event_id) }}">
+
+            <input type="hidden" id="eventInput" name="event_id" value="{{ event_id }}">
 
             <div class="form-group">
                 <label for="name">Full Name:</label>
@@ -52,13 +54,16 @@
             <button type="submit">Register</button>
         </form>
     </div>
-
-    <div id="thankYouMessage" style="display:none; text-align: center;">
-        <h2 id="thankYouEventName">Thank you for registering!</h2>
+    
+    <div id="thankYouMessage" style="display:none; text-align: center;" data-home-url="{{ url_for('home') }}">
+        <h2>Thank you for registering!</h2>
         <p>Check out other exciting events.</p>
     </div>
-
+    
+    
     <div id="overlay" style="display:none;"></div>
+    
+    
 
 </body>
 </html>

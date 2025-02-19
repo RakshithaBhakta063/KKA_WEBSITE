@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     updateEventDetails();
+    
+    const form = document.getElementById("registrationForm");
+    if (form) {
+        form.addEventListener("submit", submitForm);
+    }
 });
 
 function updateEventDetails() {
@@ -50,6 +55,16 @@ function validatePeople() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const redirectBtn = document.getElementById("redirectBtn");
+    if (redirectBtn) {
+        redirectBtn.addEventListener("click", function () {
+            window.location.href = "{{ url_for('home') }}";
+        });
+    }
+});
+
+
 function submitForm(event) {
     event.preventDefault();
 
@@ -61,7 +76,13 @@ function submitForm(event) {
     document.getElementById("thankYouMessage").style.display = "block";
     document.getElementById("overlay").style.display = "block";
 
+    // Get home URL from the thankYouMessage div
+    const homeUrl = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+
+    // Redirect to home after 3 seconds
     setTimeout(() => {
-        window.location.href = "upevents.html";
+        window.location.href = homeUrl;
     }, 3000);
 }
+
+

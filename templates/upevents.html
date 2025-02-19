@@ -27,6 +27,8 @@
                     <div class="event-info">
                         <h3>{{ event[0] }}</h3>
                         <p><strong>Description:</strong> {{ event[1] }}</p>
+                        <!-- Register Button -->
+                        <a href="{{ url_for('event_register', event_id=event[0]) }}" class="register-btn">Register</a>
                     </div>
                 </div>
                 {% endfor %}

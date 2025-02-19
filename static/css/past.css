@@ -1,27 +1,18 @@
-body{
-    font-family:'Poppins',sans-serif;
-    background-color:#f8f8f8;
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffefb1; /* Light yellow background */
+    color: #333;
     text-align: center;
-    padding:20px;
+    padding: 20px;
+    line-height: 1.6;
+    font-size: 16px;
+}
 
-}
-.heading-box {
-    width: fit-content; /* Adjust width based on content */
-    padding: 24px 400px; /* Add spacing inside the box */
-    background-color: #ff9d4d; /* Box background color */
-    color: white; /* Text color */
-    font-size: 40px; /* Font size */
-    font-weight: bold; /* Bold text */
-    text-align: center; /* Center align text */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
-    display: inline-block; /* Fit to content width */
-}
 
 /* Past Events Section */
 .past-events {
-    background-color: #f8f8f8;
-    padding: 50px 20px;
+    background-color: #f0dd89;
+    padding: 30px 20px;
     text-align: center;
 }
 

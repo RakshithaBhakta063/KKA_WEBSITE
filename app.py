@@ -57,6 +57,17 @@ def init_db():
         category TEXT CHECK(category IN ('upcoming', 'past')) NOT NULL,
         uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+    CREATE TABLE IF NOT EXISTS event_registrations (
+        registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        num_people INTEGER NOT NULL,
+        adults INTEGER NOT NULL,
+        children INTEGER NOT NULL,
+        FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
+    );
     CREATE TABLE IF NOT EXISTS admins (
         admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
@@ -231,7 +242,7 @@ def upload_content():
 def upcoming_events():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT title, description, file_path FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
+    cursor.execute("SELECT event_id, title, description, file_path ,category, uploaded_at FROM events")
     events = cursor.fetchall()
     conn.close()
     return render_template('upevents.html', events=events)
@@ -245,6 +256,36 @@ def past_events():
     events = cursor.fetchall()
     conn.close()
     return render_template('Past_Events.html', events=events)
+
+@app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
+def event_register(event_id):
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        num_people = request.form['people']
+        num_adults = request.form['adults']
+        num_children = request.form['children']
+
+        # Establish DB Connection
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+
+        # Save registration to database
+        query = """
+        INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
+
+        # Commit and Close
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('home'))  # Redirect after successful registration
+
+    return render_template('EventReg.html', event_id=event_id)
+
 
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
