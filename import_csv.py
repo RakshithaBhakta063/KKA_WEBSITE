@@ -3,8 +3,8 @@ import sqlite3
 from werkzeug.security import generate_password_hash
 
 # Define database and CSV file paths
-DB_PATH = r"C:\Users\raksh\Downloads\Karaval-Konkans-A-main\database.db"
-CSV_PATH = r"C:\Users\raksh\Downloads\Karaval-Konkans-A-main\KKA.csv"
+DB_PATH = r"/Users/melisha/Desktop/karaval project/KKA_WEBSITE/database.db"
+CSV_PATH = r"/Users/melisha/Desktop/karaval project/KKA_WEBSITE/KKA.csv"
 
 # Load CSV data
 df = pd.read_csv(CSV_PATH)

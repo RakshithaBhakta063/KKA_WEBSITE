@@ -188,7 +188,7 @@ def register():
 #     return render_template('login.html')
 @app.route('/forgot-password')
 def forgot_password():
-    return "Forgot Password functionality will be added soon."
+    return render_template('forgot-password.html')
 
 
 @app.route('/logout')
