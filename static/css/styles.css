@@ -401,8 +401,8 @@ button[onclick="addMember()"] {
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     text-align: center;
+    justify-content: center;
 }
-
 
 form {
     display: flex;
@@ -412,8 +412,9 @@ form {
 
 #loginSubmit{
     width:100px;
-    margin-left:160px;
     margin-top:35px;
+    margin: 35px auto 0 auto;
+    display: block;
 
 }
 

@@ -313,6 +313,7 @@ def admin_login():
     return render_template('admin-login.html')
 
 
+
 # Admin Panel Route
 @app.route('/admin')
 def admin_panel():
