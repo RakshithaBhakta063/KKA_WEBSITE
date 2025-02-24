@@ -541,6 +541,78 @@ def admin_logout():
     flash("Admin logged out successfully!", "info")
     return redirect(url_for('admin_login'))
 
+@app.route('/fetch-event-registrations')
+def fetch_event_registrations():
+    if 'admin_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    query = '''
+    SELECT er.registration_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children, 
+           e.event_id, e.title
+    FROM event_registrations er
+    JOIN events e ON er.event_id = e.event_id
+    '''
+    
+    cursor.execute(query)
+    event_registrations = cursor.fetchall()
+    
+    conn.close()
+
+    return jsonify(event_registrations)
+@app.route('/get-event-registrations')
+def get_event_registrations():
+    if 'admin_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Fetch all event registrations with event details
+    query = '''
+    SELECT er.registration_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children, 
+           e.event_id, e.title
+    FROM event_registrations er
+    JOIN events e ON er.event_id = e.event_id
+    ORDER BY er.registration_id DESC
+    '''
+    
+    cursor.execute(query)
+    event_registrations = cursor.fetchall()
+    
+    conn.close()
+
+    # Convert list of tuples into JSON format
+    return jsonify([
+        {
+            "registration_id": reg[0],
+            "name": reg[1],
+            "email": reg[2],
+            "phone": reg[3],
+            "num_people": reg[4],
+            "adults": reg[5],
+            "children": reg[6],
+            "event_id": reg[7],
+            "event_title": reg[8]
+        } 
+        for reg in event_registrations
+    ])
+
+
+@app.route('/admin/data')
+def get_admin_data():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM events")
+    data = cursor.fetchall()
+    conn.close()
+    
+    print("Admin data fetched:", data)  # Debugging
+    return jsonify(data)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

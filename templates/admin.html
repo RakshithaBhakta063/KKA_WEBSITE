@@ -165,12 +165,32 @@
             
             <!-- Registrations Section -->
             <div class="section" id="registrations">
-                <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event: Konkani Mai Bhas</h3>
+                <!-- <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event: Konkani Mai Bhas</h3> -->
+                <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event Registrations</h3>
+                <table id="eventRegistrationTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>Registration ID</th>
+                            <th>Event ID</th>
+                            <th>Event Title</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Number of People</th>
+                            <th>Adults</th>
+                            <th>Children</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <!-- Data will be inserted dynamically -->
+                    </tbody>
+                </table>
+
                 
-                <input type="text" id="registrationSearch" placeholder="Search users" onkeyup="searchTable('registrationTable', 'registrationSearch')">
+                <!-- <input type="text" id="registrationSearch" placeholder="Search users" onkeyup="searchTable('registrationTable', 'registrationSearch')"> -->
             
                 <button id="exportPDF" class="tab-button">Export Registered Users to PDF</button>
-            
+                <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">User Registered</h3>
                 <table id="registrationTable">
                     <thead>
                         <tr>
