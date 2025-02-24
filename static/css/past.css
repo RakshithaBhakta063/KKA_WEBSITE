@@ -1,31 +1,31 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #ffefb1; /* Light yellow background */
-    color: #333;
+    background-color: #e9b65f; /* Light yellow background */
+    color: #721c1c;
     text-align: center;
     padding: 20px;
     line-height: 1.6;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 
 /* Past Events Section */
 .past-events {
-    background-color: #f0dd89;
+    background-color: #000000;
     padding: 30px 20px;
     text-align: center;
 }
 
 .past-events h2 {
-    color:#f8f8f8;
-    font-size: 2rem;
-    margin-bottom: 10px;
+    color:#ece3e3;
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
+    margin-bottom: 40px;
 }
 
 .past-events p {
     max-width: 800px;
     margin: 0 auto 30px;
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 1.2vw, 1.3rem);
     line-height: 1.6;
 }
 
@@ -34,26 +34,29 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 60px;
 }
 
 /* Individual Event Card */
 .event-card {
     background:white;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(120, 114, 114, 0.1);
+    border-radius: 50px;
     width: 80%;
     display: flex;
     align-items: center;
     gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card img {
-    width: 250px;
-    height: 150px;
+    width: 300px;
+    height: 200px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 30px;
+    transition: transform 0.3s ease;
+
 }
 
 .event-details {
@@ -62,14 +65,15 @@ body {
 }
 
 .event-details h3 {
-    color: #ff9d4d;
+    color: #db6a0e;
     margin-bottom: 10px;
+    font-size: clamp(1.2rem, 1.5vw, 1.8rem);
 }
 
 .event-details p {
-    font-size: 0.9rem;
+    font-size: clamp(1rem, 1.3vw, 1.5rem);
     line-height: 1.5;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .event-card:hover {
@@ -81,15 +85,16 @@ body {
 .event-card .btn {
     display: inline-block;
     background-color: #ff9d4d;
-    color:white;
-    padding: 8px 12px;
+    color:rgb(219, 10, 10);
+    padding: 12px 18px;
     border-radius: 5px;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    transition: background-color 0.3s ease;
 }
 
 .event-card .btn:hover {
-    background-color: #ff7633;
+    background-color: #d0784c;
 }
 
 /* Responsive Design */
@@ -100,7 +105,7 @@ body {
     }
 
     .event-card {
-        width: 90%;
+        width: 80%;
     }
 }
 
@@ -114,12 +119,38 @@ body {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        width: 100%;
+        width: 80%;
+        padding: 10px;
     }
 
     .event-card img {
         width: 100%;
         height: auto;
+    }
+
+    .event-details h3 {
+        font-size: 1.5rem;
+    }
+
+    .event-details p {
+        font-size: 1rem;
+    }
+
+    .event-card .btn {
+        font-size: 1rem;
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-card {
+        width: 80;
+        padding: 20px;
+        border-radius: 30px;
+    }
+
+    .event-card img {
+        border-radius: 20px;
     }
 
     .event-details h3 {
@@ -132,11 +163,11 @@ body {
 
     .event-card .btn {
         font-size: 1rem;
-        padding: 10px 15px;
+        padding: 10px 14px;
     }
 }
 
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
     .heading-box {
         padding: 24px 15px;
         font-size: 24px;
@@ -164,4 +195,4 @@ body {
         font-size: 1rem;
         padding: 12px 20px;
     }
-}
+} */

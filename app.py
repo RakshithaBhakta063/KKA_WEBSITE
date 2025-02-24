@@ -78,7 +78,7 @@ def init_db():
     # Insert admin user if not exists
     cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
     if not cursor.fetchone():
-        hashed_password = generate_password_hash("karavalkonkans@2025")
+        hashed_password = generate_password_hash("karavalkonkans@2025", method="pbkdf2:sha256")
         cursor.execute("INSERT INTO admins (email, password) VALUES (?, ?)",
                        ("info@karavalkonkans.org.au", hashed_password))
     conn.commit()
