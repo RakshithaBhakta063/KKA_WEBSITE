@@ -93,6 +93,41 @@ def init_db():
 
 init_db()
 
+# Function to add a new user to the database
+def add_user(name, email, password, phone, city, details, num_children, interests):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Hash password before storing
+    hashed_password = generate_password_hash(password)
+
+    # Insert user details
+    cursor.execute('''
+        INSERT INTO users (name, email, password, phone) 
+        VALUES (?, ?, ?, ?)
+    ''', (name, email, hashed_password, phone))
+    
+    user_id = cursor.lastrowid  # Get the user ID of the newly inserted user
+
+    # Insert family details
+    cursor.execute('''
+        INSERT INTO family_details (user_id, nearest_city, details, num_children) 
+        VALUES (?, ?, ?, ?)
+    ''', (user_id, city, details, int(num_children or 0)))  # Ensure num_children is an integer
+
+    family_id = cursor.lastrowid  # Get family ID
+
+    # Insert interests
+    if interests:
+        for interest in interests.split(","):  # Assuming interests are comma-separated
+            cursor.execute('''
+                INSERT INTO interests (family_id, interest) 
+                VALUES (?, ?)
+            ''', (family_id, interest.strip()))
+
+    conn.commit()
+    conn.close()
+
 @app.route('/')
 def home():
     return render_template('index.html')

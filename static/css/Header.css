@@ -17,7 +17,7 @@ header {
     padding: 15px;
     justify-content: space-between;
     align-items: center;
-    position: fixed; /*remve*/
+    position: fixed; 
     width: 100%;
     z-index: 1000;
     height: 100px;
@@ -27,14 +27,14 @@ header {
 header img {
     height: auto;  /* Maintain aspect ratio */
     width: 100%;   /* Adjust to container width */
-    max-width: 170px; /* Prevent it from getting too large */
-    margin-right: auto;
+    max-width: 170px;
+    /* margin-right: auto;  */
 }
 
 nav {
     display: flex;
     gap: 2rem; /*6rem*/
-    /*flex-grow: 1;*/
+    /* flex-grow: 1; */
     align-items: center; /*remove*/
 }
 
