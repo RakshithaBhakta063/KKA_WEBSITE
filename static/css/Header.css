@@ -17,7 +17,11 @@ header {
     padding: 15px;
     justify-content: space-between;
     align-items: center;
+<<<<<<< HEAD
     position: fixed; 
+=======
+    position: fixed; /*remve*/
+>>>>>>> f5e875d (Added entire folder)
     width: 100%;
     z-index: 1000;
     height: 100px;
@@ -27,14 +31,23 @@ header {
 header img {
     height: auto;  /* Maintain aspect ratio */
     width: 100%;   /* Adjust to container width */
+<<<<<<< HEAD
     max-width: 170px;
     /* margin-right: auto;  */
+=======
+    max-width: 170px; /* Prevent it from getting too large */
+    margin-right: auto;
+>>>>>>> f5e875d (Added entire folder)
 }
 
 nav {
     display: flex;
     gap: 2rem; /*6rem*/
+<<<<<<< HEAD
     /* flex-grow: 1; */
+=======
+    /*flex-grow: 1;*/
+>>>>>>> f5e875d (Added entire folder)
     align-items: center; /*remove*/
 }
 
@@ -66,7 +79,11 @@ nav a:hover {
         top: 100px; /* Position it below the header */
         left: 0;
         width: 100%;
+<<<<<<< HEAD
         padding: 10px 0;
+=======
+        padding: 7px 0;
+>>>>>>> f5e875d (Added entire folder)
         display: none; /* Hide initially */
     }
 
@@ -75,7 +92,11 @@ nav a:hover {
     }
 
     nav a {
+<<<<<<< HEAD
         padding: 10px;
+=======
+        padding: 8px;
+>>>>>>> f5e875d (Added entire folder)
         text-align: center;
         width: 100%;
     }
@@ -580,4 +601,61 @@ nav a:hover {
     font-size: 20px;
     color: white;
     padding-bottom:15px;
+<<<<<<< HEAD
 }
+=======
+}
+/* Existing styles remain unchanged */
+
+/* Existing styles remain unchanged */
+
+/* New class for closing the menu */
+.nav-close {
+    display: none;
+}
+
+/* When active, hide the menu */
+nav.closed {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 24px;
+        color: #f4e3cf;
+    }
+    
+    /* Ensure close button appears only in dropdown */
+    .dropdown-content .close-menu {
+        display: block;
+        cursor: pointer;
+        font-size: 16px; /* Reduced text size */
+        color:red;
+        padding: 8px; /* Adjusted padding */
+        text-align: right;
+    }
+    
+    .close-menu {
+        display: none;
+    }
+    
+    /* Ensure close button only appears when dropdown is active */
+    .dropdown-content.active .close-menu {
+        display: block;
+    }
+    
+    /* Added smooth transition for better UX */
+    nav {
+        transition: all 0.3s ease-in-out;
+    }
+    
+    /* Improve visibility when menu is open */
+    .dropdown-content.active {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        border-radius: 5px;
+    }
+}
+>>>>>>> f5e875d (Added entire folder)
