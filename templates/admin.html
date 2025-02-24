@@ -167,23 +167,35 @@
             <div class="section" id="registrations">
                 <!-- <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event: Konkani Mai Bhas</h3> -->
                 <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event Registrations</h3>
-                <table id="eventRegistrationTable" border="1">
+                <table id="eventRegistrationTable">
                     <thead>
                         <tr>
-                            <th>Registration ID</th>
-                            <th>Event ID</th>
-                            <th>Event Title</th>
-                            <th>Full Name</th>
+                            <!-- <th>Registration ID</th> -->
+                            <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                            <th>Registered ID</th>
+                            <th>Event_ID</th>
+                            <th>Event Title</th>
+                            <!-- <th>Number of People</th>
+                            <th>Adults</th> -->
                             <th>Number of People</th>
-                            <th>Adults</th>
-                            <th>Children</th>
                         </tr>
                     </thead>
-                    <tbody id="adminTableBody">
-                        <!-- Data will be inserted dynamically -->
+                    <tbody>
+                        {% for reg in event_registrations %}
+                        <tr>
+                            <td>{{ reg[3] }}</td> <!-- Name -->
+                            <td>{{ reg[4] }}</td> <!-- Email -->
+                            <td>{{ reg[5] }}</td> <!-- Phone -->
+                            <td>{{ reg[0] }}</td> <!-- Registration ID -->
+                            <td>{{ reg[1] }}</td> <!-- Event ID -->
+                            <td>{{ reg[2] }}</td> <!-- Event Title -->
+                            <td>{{ reg[6] }}</td> <!-- Number of People -->
+                        </tr>
+                        {% endfor %}
                     </tbody>
+                    
                 </table>
 
                 

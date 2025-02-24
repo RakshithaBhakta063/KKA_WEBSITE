@@ -495,6 +495,43 @@ def admin_login():
 
 
 # Admin Panel Route
+# @app.route('/admin')
+# def admin_panel():
+#     if 'admin_id' not in session:
+#         flash("Please log in as an admin to access this page.", "danger")
+#         return redirect(url_for('admin_login'))
+
+#     with sqlite3.connect(DB_PATH) as conn:
+#         cursor = conn.cursor()
+
+#         # Fetch user registrations with family details and interests
+#         query = '''
+#         SELECT 
+#             u.user_id, u.name, u.email, u.phone,
+#             f.family_id, f.nearest_city, f.details, f.num_children,
+#             COALESCE(GROUP_CONCAT(i.interest, ', '), 'None') AS interests
+#         FROM users u
+#         LEFT JOIN family_details f ON u.user_id = f.user_id
+#         LEFT JOIN interests i ON f.family_id = i.family_id
+#         GROUP BY u.user_id, f.family_id;
+#         '''
+#         cursor.execute(query)
+#         registrations = cursor.fetchall()
+
+#         # Fetch upcoming events
+#         cursor.execute("SELECT title, description, file_path FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
+#         upcoming_events = cursor.fetchall()
+
+#         # Fetch past events
+#         cursor.execute("SELECT title, description, file_path FROM events WHERE category='past' ORDER BY uploaded_at DESC")
+#         past_events = cursor.fetchall()
+
+#     return render_template(
+#         "admin.html",
+#         registrations=registrations,
+#         upcoming_events=upcoming_events,
+#         past_events=past_events
+#     )
 @app.route('/admin')
 def admin_panel():
     if 'admin_id' not in session:
@@ -526,11 +563,21 @@ def admin_panel():
         cursor.execute("SELECT title, description, file_path FROM events WHERE category='past' ORDER BY uploaded_at DESC")
         past_events = cursor.fetchall()
 
+        # Fetch event registrations with event details
+        cursor.execute('''
+        SELECT er.registration_id, er.event_id, e.title, er.name, er.email, er.phone, er.num_people
+        FROM event_registrations er
+        JOIN events e ON er.event_id = e.event_id
+        ORDER BY er.registration_id DESC
+        ''')
+        event_registrations = cursor.fetchall()
+
     return render_template(
         "admin.html",
         registrations=registrations,
         upcoming_events=upcoming_events,
-        past_events=past_events
+        past_events=past_events,
+        event_registrations=event_registrations  # Pass event registrations to the template
     )
 
 
@@ -549,19 +596,30 @@ def fetch_event_registrations():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # Fetch correct event registrations
     query = '''
-    SELECT er.registration_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children, 
-           e.event_id, e.title
+    SELECT er.registration_id, er.event_id, er.name, er.email, er.phone, er.num_people, e.title
     FROM event_registrations er
     JOIN events e ON er.event_id = e.event_id
     '''
     
     cursor.execute(query)
     event_registrations = cursor.fetchall()
-    
     conn.close()
 
-    return jsonify(event_registrations)
+    return jsonify([
+        {
+            "registration_id": reg[0],
+            "event_id": reg[1],
+            "name": reg[2],
+            "email": reg[3],
+            "phone": reg[4],
+            "num_people": reg[5],
+            "event_title": reg[6]
+        } 
+        for reg in event_registrations
+    ])
+
 @app.route('/get-event-registrations')
 def get_event_registrations():
     if 'admin_id' not in session:
@@ -600,7 +658,6 @@ def get_event_registrations():
         for reg in event_registrations
     ])
 
-
 @app.route('/admin/data')
 def get_admin_data():
     conn = sqlite3.connect(DB_PATH)
@@ -612,6 +669,19 @@ def get_admin_data():
     print("Admin data fetched:", data)  # Debugging
     return jsonify(data)
 
+@app.route('/event_registrations')
+def event_registrations():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT registration_id, event_id, title, name, email, phone, num_people, adults, children
+        FROM event_registrations
+        JOIN events ON event_registrations.event_id = events.event_id
+    ''')
+    registrations = cursor.fetchall()
+    conn.close()
+
+    return render_template('event_registrations.html', registrations=registrations)
 
 # Home Page
 @app.route('/')

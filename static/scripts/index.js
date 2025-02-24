@@ -175,84 +175,29 @@ function fetchEventRegistrations() {
     fetch('/fetch-event-registrations')
     .then(response => response.json())
     .then(data => {
+        console.log("Received event registrations:", data); // ✅ Debugging
+
         const tableBody = document.querySelector("#eventRegistrationTable tbody");
-        tableBody.innerHTML = "";
+        tableBody.innerHTML = ""; // Clear previous rows
+
         data.forEach((reg) => {
-            let row = `<tr>
-                <td>${reg[0]}</td>
-                <td>${reg[7]}</td> <!-- Event ID -->
-                <td>${reg[8]}</td> <!-- Event Title -->
-                <td>${reg[1]}</td> <!-- Name -->
-                <td>${reg[2]}</td> <!-- Email -->
-                <td>${reg[3]}</td> <!-- Phone -->
-                <td>${reg[4]}</td> <!-- Total People -->
-                <td>${reg[5]}</td> <!-- Adults -->
-                <td>${reg[6]}</td> <!-- Children -->
-            </tr>`;
-            tableBody.innerHTML += row;
-        });
-    });
-}
+            console.log(`Mapping Data - Registration ID: ${reg.registration_id}, Event ID: ${reg.event_id}, Name: ${reg.name}, Num People: ${reg.num_people}`); // ✅ Debug log
 
-// Ensure the function runs when the registrations section is displayed
-document.addEventListener("DOMContentLoaded", function () {
-    fetchEventRegistrations();
-});
+            let row = document.createElement("tr");
 
-function loadEventRegistrations() {
-    console.log("Fetching event registrations...");
-
-    fetch('/get-event-registrations')
-    .then(response => response.json())
-    .then(data => {
-        console.log("Received data:", data);  // Log data to check if it's received
-
-        let tableBody = document.querySelector("#eventRegistrationTable tbody");
-        tableBody.innerHTML = ""; // Clear previous data
-
-        data.forEach((registration) => {
-            let row = `
-                <tr>
-                    <td>${registration.registration_id}</td>
-                    <td>${registration.event_id}</td>
-                    <td>${registration.event_title}</td>
-                    <td>${registration.name}</td>
-                    <td>${registration.email}</td>
-                    <td>${registration.phone}</td>
-                    <td>${registration.num_people}</td>
-                    <td>${registration.adults}</td>
-                    <td>${registration.children || "0"}</td>
-                </tr>
+            row.innerHTML = `
+                <td>${reg.name || '-'}</td>    
+                <td>${reg.email || '-'}</td>
+                <td>${reg.phone || '-'}</td>
+                <td>${reg.registration_id || '-'}</td>
+                <td>${reg.event_id || '-'} </td> <!-- ✅ Correctly mapped -->
+                <td>${reg.num_people !== undefined ? reg.num_people : '-'} </td>  <!-- ✅ Correctly mapped -->
             `;
-            tableBody.innerHTML += row;
+
+            tableBody.appendChild(row);
         });
+
+        console.log("Table updated successfully!");
     })
     .catch(error => console.error("Error loading registrations:", error));
 }
-
-document.addEventListener("DOMContentLoaded", loadEventRegistrations);
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    fetch('/admin/data')
-    .then(response => response.json())
-    .then(data => {
-        console.log("Fetched data:", data);  // Debugging
-        let tableBody = document.getElementById("adminTableBody");
-        tableBody.innerHTML = "";  // Clear existing data
-
-        data.forEach(event => {
-            let tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${event[0]}</td>
-                <td>${event[1]}</td>
-                <td>${event[2]}</td>
-                <td><img src="${event[3]}" alt="Event Image" width="100"></td>
-                <td>${event[4]}</td>
-                <td>${event[5]}</td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    })
-    .catch(error => console.error("Error fetching admin data:", error));
-})
