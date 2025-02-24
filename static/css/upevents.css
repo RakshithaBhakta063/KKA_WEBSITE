@@ -1,7 +1,7 @@
 /* General Styling */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f0bb51; /* Light yellow background */
+    background-color: #f4d1c4; /* Light yellow background */
     color: #630404;
     text-align: center;
     padding: 30px;
@@ -56,7 +56,7 @@ Search Bar
     gap: 20px;
     padding: 40px;
     margin: 40px auto;
-    background-color: rgb(240, 215, 134);
+    background-color: rgb(232, 211, 171);
     border-radius: 12px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;

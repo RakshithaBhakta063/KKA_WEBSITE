@@ -1,29 +1,32 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #e9b65f; /* Light yellow background */
+    background-color: #f4d1c4; /* Light yellow background */
     color: #721c1c;
     text-align: center;
-    padding: 20px;
-    line-height: 1.6;
+    padding: 2%;
+    line-height: 1;
     font-size: 20px;
+    
 }
 
 
 /* Past Events Section */
 .past-events {
     background-color: #000000;
-    padding: 30px 20px;
+    padding: 5% 10%;
+    height: 40%;
+    min-height: 100vh; /* Ensures it takes up full screen height */
     text-align: center;
 }
 
 .past-events h2 {
     color:#ece3e3;
     font-size: clamp(1.5rem, 2vw, 2.5rem);
-    margin-bottom: 40px;
+    margin-bottom: 10px;
 }
 
 .past-events p {
-    max-width: 800px;
+    max-width: 500px;
     margin: 0 auto 30px;
     font-size: clamp(1rem, 1.2vw, 1.3rem);
     line-height: 1.6;
@@ -34,25 +37,25 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 60px;
+    gap: 70px;
 }
 
 /* Individual Event Card */
 .event-card {
-    background:white;
-    padding: 10px;
+    background:rgb(232, 211, 171);
+    padding: 60px;
     box-shadow: 0 4px 6px rgba(120, 114, 114, 0.1);
     border-radius: 50px;
     width: 80%;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card img {
-    width: 300px;
-    height: 200px;
+    width: 250px;
+    height: 150px;
     object-fit: cover;
     border-radius: 30px;
     transition: transform 0.3s ease;
