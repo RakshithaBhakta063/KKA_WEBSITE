@@ -19,69 +19,77 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
+    
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    cursor.executescript('''
-    CREATE TABLE IF NOT EXISTS users (
-        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        phone TEXT NOT NULL
-    );
+    try:
+        cursor.executescript('''
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            phone TEXT NOT NULL
+        );
 
-    CREATE TABLE IF NOT EXISTS family_details (
-        family_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        nearest_city TEXT,
-        details TEXT,
-        num_children INTEGER DEFAULT 0,
-        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-    );
+        CREATE TABLE IF NOT EXISTS family_details (
+            family_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            nearest_city TEXT,
+            details TEXT,
+            num_children INTEGER DEFAULT 0,
+            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        );
 
-    CREATE TABLE IF NOT EXISTS interests (
-        interest_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        family_id INTEGER NOT NULL,
-        interest TEXT NOT NULL,
-        FOREIGN KEY (family_id) REFERENCES family_details(family_id) ON DELETE CASCADE
-    );
+        CREATE TABLE IF NOT EXISTS interests (
+            interest_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            family_id INTEGER NOT NULL,
+            interest TEXT NOT NULL,
+            FOREIGN KEY (family_id) REFERENCES family_details(family_id) ON DELETE CASCADE
+        );
 
-    CREATE TABLE IF NOT EXISTS events (
-        event_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT,
-        file_path TEXT NOT NULL,
-        category TEXT CHECK(category IN ('upcoming', 'past')) NOT NULL,
-        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    CREATE TABLE IF NOT EXISTS event_registrations (
-        registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        event_id INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        phone TEXT NOT NULL,
-        num_people INTEGER NOT NULL,
-        adults INTEGER NOT NULL,
-        children INTEGER NOT NULL,
-        FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
-    );
-    CREATE TABLE IF NOT EXISTS admins (
-        admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    );
-    ''')
-    # Insert admin user if not exists
-    cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
-    if not cursor.fetchone():
-        hashed_password = generate_password_hash("karavalkonkans@2025")
-        cursor.execute("INSERT INTO admins (email, password) VALUES (?, ?)",
-                       ("info@karavalkonkans.org.au", hashed_password))
-    conn.commit()
-    conn.close()
+        CREATE TABLE IF NOT EXISTS events (
+            event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT,
+            file_path TEXT NOT NULL,
+            category TEXT CHECK(category IN ('upcoming', 'past')) NOT NULL,
+            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS event_registrations (
+            registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            num_people INTEGER NOT NULL,
+            adults INTEGER NOT NULL,
+            children INTEGER NOT NULL,
+            FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS admins (
+            admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        );
+        ''')
+
+        # Insert admin user if not exists
+        cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
+        if not cursor.fetchone():
+            hashed_password = generate_password_hash("karavalkonkans@2025")
+            cursor.execute("INSERT INTO admins (email, password) VALUES (?, ?)",
+                           ("info@karavalkonkans.org.au", hashed_password))
+        conn.commit()
+    except Exception as e:
+        print("Database Initialization Error:", e)
+    finally:
+        conn.close()
+
 
 init_db()
 
@@ -202,7 +210,7 @@ def forgot_password():
     return render_template('forgot-password.html')
 
 
-@app.route('/logout')
+@app.route('/logout') 
 def logout():
     session.clear()
     flash("Logged out successfully!", "info")
@@ -257,6 +265,36 @@ def past_events():
     conn.close()
     return render_template('Past_Events.html', events=events)
 
+# @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
+# def event_register(event_id):
+#     if request.method == 'POST':
+#         name = request.form['name']
+#         email = request.form['email']
+#         phone = request.form['phone']
+#         num_people = request.form['people']
+#         num_adults = request.form['adults']
+#         num_children = request.form['children']
+
+#         # Establish DB Connection
+#         conn = sqlite3.connect(DB_PATH)
+#         cursor = conn.cursor()
+
+#         # Save registration to database
+#         query = """
+#         INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
+#         VALUES (?, ?, ?, ?, ?, ?, ?)
+#         """
+#         cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
+
+#         # Commit and Close
+#         conn.commit()
+#         conn.close()
+
+#         return redirect(url_for('home'))  # Redirect after successful registration
+
+#     return render_template('EventReg.html', event_id=event_id)
+
+
 @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
 def event_register(event_id):
     if request.method == 'POST':
@@ -266,6 +304,10 @@ def event_register(event_id):
         num_people = request.form['people']
         num_adults = request.form['adults']
         num_children = request.form['children']
+
+        #24
+        print(f"Event ID: {event_id}, Name: {name}, Email: {email}, Phone: {phone}, People: {num_people}, Adults: {num_adults}, Children: {num_children}")
+
 
         # Establish DB Connection
         conn = sqlite3.connect(DB_PATH)
@@ -285,6 +327,7 @@ def event_register(event_id):
         return redirect(url_for('home'))  # Redirect after successful registration
 
     return render_template('EventReg.html', event_id=event_id)
+
 
 
 @app.route('/admin-login', methods=['GET', 'POST'])

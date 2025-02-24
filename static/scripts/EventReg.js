@@ -65,24 +65,59 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+// function submitForm(event) {
+//     event.preventDefault();
+
+//     // Final validation to ensure correctness
+//     validatePeople();
+
+//     // Hide the form and show thank you message
+//     document.getElementById("registrationForm").style.display = "none";
+//     document.getElementById("thankYouMessage").style.display = "block";
+//     document.getElementById("overlay").style.display = "block";
+
+//     // Get home URL from the thankYouMessage div
+//     const homeUrl = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+
+//     // Redirect to home after 3 seconds
+//     setTimeout(() => {
+//         window.location.href = homeUrl;
+//     }, 3000);
+// }
+
 function submitForm(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission
 
-    // Final validation to ensure correctness
-    validatePeople();
+    validatePeople(); // Ensure total people, adults, and children are valid
 
-    // Hide the form and show thank you message
-    document.getElementById("registrationForm").style.display = "none";
-    document.getElementById("thankYouMessage").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
+    const form = document.getElementById("registrationForm");
+    const formData = new FormData(form);
 
-    // Get home URL from the thankYouMessage div
-    const homeUrl = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+    fetch(form.action, {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text(); // Change to response.json() if returning JSON
+        }
+        throw new Error("Form submission failed.");
+    })
+    .then(() => {
+        // Hide form and show success message
+        document.getElementById("registrationForm").style.display = "none";
+        document.getElementById("thankYouMessage").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
 
-    // Redirect to home after 3 seconds
-    setTimeout(() => {
-        window.location.href = homeUrl;
-    }, 3000);
+        // Redirect to home after 3 seconds
+        const homeUrl = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+        setTimeout(() => {
+            window.location.href = homeUrl;
+        }, 3000);
+    })
+    .catch(error => {
+        alert("Error submitting form: " + error.message);
+    });
 }
 
 
