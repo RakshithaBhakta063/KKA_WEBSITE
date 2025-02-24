@@ -613,6 +613,28 @@ def get_admin_data():
     return jsonify(data)
 
 
+# Home Page
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('index.html')
+
+@app.route('/aboutus')
+def aboutus():
+    return render_template('aboutus.html')
+
+@app.route('/news')
+def news():
+    return render_template('news.html')
+
+@app.route('/gallery')
+def gallery():
+    return render_template('gallery.html')
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
