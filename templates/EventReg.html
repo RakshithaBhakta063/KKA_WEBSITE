@@ -14,7 +14,8 @@
 
         <form id="registrationForm" method="POST" action="{{ url_for('event_register', event_id=event_id) }}">
 
-            <input type="hidden" id="eventInput" name="event_id" value="{{ event_id }}">
+            <!-- <input type="hidden" id="eventInput" name="event_id" value="{{ event_id }}"> -->
+            <input type="hidden" name="event_id" value="{{ event_id }}">
 
             <div class="form-group">
                 <label for="name">Full Name:</label>
@@ -48,7 +49,9 @@
                 </div>
             </div>
 
+            <!-- <button type="submit">Register</button> -->
             <button type="submit">Register</button>
+
         </form>
 
     </div>

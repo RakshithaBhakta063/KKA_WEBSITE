@@ -68,56 +68,69 @@ document.addEventListener("DOMContentLoaded", function () {
 // function submitForm(event) {
 //     event.preventDefault();
 
-//     // Final validation to ensure correctness
+//     // Validate before submission
 //     validatePeople();
 
-//     // Hide the form and show thank you message
-//     document.getElementById("registrationForm").style.display = "none";
-//     document.getElementById("thankYouMessage").style.display = "block";
-//     document.getElementById("overlay").style.display = "block";
+//     const form = document.getElementById("registrationForm");
+//     const formData = new FormData(form);
 
-//     // Get home URL from the thankYouMessage div
-//     const homeUrl = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+//     fetch(form.action, {
+//         method: "POST",
+//         body: formData
+//     })
+//     .then(response => response.json())  // Convert response to JSON
+//     .then(data => {
+//         if (data.success) {
+//             // Hide form and show thank you message
+//             form.style.display = "none";
+//             document.getElementById("thankYouMessage").style.display = "block";
+//             document.getElementById("overlay").style.display = "block";
 
-//     // Redirect to home after 3 seconds
-//     setTimeout(() => {
-//         window.location.href = homeUrl;
-//     }, 3000);
+//             // Redirect after 3 seconds
+//             setTimeout(() => {
+//                 window.location.href = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+//             }, 3000);
+//         } else {
+//             alert(data.message);  // Show error message if registration fails
+//         }
+//     })
+//     .catch(error => {
+//         console.error("Error:", error);
+//         alert("Something went wrong. Please try again later.");
+//     });
 // }
 
 function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
-    validatePeople(); // Ensure total people, adults, and children are valid
+    // Validate before submission
+    validatePeople();
 
     const form = document.getElementById("registrationForm");
     const formData = new FormData(form);
 
     fetch(form.action, {
         method: "POST",
-        body: formData,
+        body: formData
     })
-    .then(response => {
-        if (response.ok) {
-            return response.text(); // Change to response.json() if returning JSON
-        }
-        throw new Error("Form submission failed.");
-    })
-    .then(() => {
-        // Hide form and show success message
-        document.getElementById("registrationForm").style.display = "none";
-        document.getElementById("thankYouMessage").style.display = "block";
-        document.getElementById("overlay").style.display = "block";
+    .then(response => response.json())  // ✅ Convert response to JSON
+    .then(data => {
+        if (data.success) {
+            // ✅ Show thank-you message on success
+            form.style.display = "none";
+            document.getElementById("thankYouMessage").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
 
-        // Redirect to home after 3 seconds
-        const homeUrl = document.getElementById("thankYouMessage").getAttribute("data-home-url");
-        setTimeout(() => {
-            window.location.href = homeUrl;
-        }, 3000);
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                window.location.href = document.getElementById("thankYouMessage").getAttribute("data-home-url");
+            }, 3000);
+        } else {
+            alert(data.message);  // Show error message if registration fails
+        }
     })
     .catch(error => {
-        alert("Error submitting form: " + error.message);
+        console.error("Error:", error);
+        alert("Something went wrong. Please try again later.");
     });
 }
-
-

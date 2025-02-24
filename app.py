@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from flask import jsonify
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -19,77 +20,69 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-    
+
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    try:
-        cursor.executescript('''
-        CREATE TABLE IF NOT EXISTS users (
-            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            phone TEXT NOT NULL
-        );
+    cursor.executescript('''
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        phone TEXT NOT NULL
+    );
 
-        CREATE TABLE IF NOT EXISTS family_details (
-            family_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            nearest_city TEXT,
-            details TEXT,
-            num_children INTEGER DEFAULT 0,
-            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-        );
+    CREATE TABLE IF NOT EXISTS family_details (
+        family_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        nearest_city TEXT,
+        details TEXT,
+        num_children INTEGER DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    );
 
-        CREATE TABLE IF NOT EXISTS interests (
-            interest_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            family_id INTEGER NOT NULL,
-            interest TEXT NOT NULL,
-            FOREIGN KEY (family_id) REFERENCES family_details(family_id) ON DELETE CASCADE
-        );
+    CREATE TABLE IF NOT EXISTS interests (
+        interest_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        family_id INTEGER NOT NULL,
+        interest TEXT NOT NULL,
+        FOREIGN KEY (family_id) REFERENCES family_details(family_id) ON DELETE CASCADE
+    );
 
-        CREATE TABLE IF NOT EXISTS events (
-            event_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            description TEXT,
-            file_path TEXT NOT NULL,
-            category TEXT CHECK(category IN ('upcoming', 'past')) NOT NULL,
-            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS event_registrations (
-            registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            event_id INTEGER NOT NULL,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            phone TEXT NOT NULL,
-            num_people INTEGER NOT NULL,
-            adults INTEGER NOT NULL,
-            children INTEGER NOT NULL,
-            FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
-        );
-
-        CREATE TABLE IF NOT EXISTS admins (
-            admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        );
-        ''')
-
-        # Insert admin user if not exists
-        cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
-        if not cursor.fetchone():
-            hashed_password = generate_password_hash("karavalkonkans@2025")
-            cursor.execute("INSERT INTO admins (email, password) VALUES (?, ?)",
-                           ("info@karavalkonkans.org.au", hashed_password))
-        conn.commit()
-    except Exception as e:
-        print("Database Initialization Error:", e)
-    finally:
-        conn.close()
-
+    CREATE TABLE IF NOT EXISTS events (
+        event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        file_path TEXT NOT NULL,
+        category TEXT CHECK(category IN ('upcoming', 'past')) NOT NULL,
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE IF NOT EXISTS event_registrations (
+        registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        num_people INTEGER NOT NULL,
+        adults INTEGER NOT NULL,
+        children INTEGER NOT NULL,
+        FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS admins (
+        admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    );
+    ''')
+    # Insert admin user if not exists
+    cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
+    if not cursor.fetchone():
+        hashed_password = generate_password_hash("karavalkonkans@2025")
+        cursor.execute("INSERT INTO admins (email, password) VALUES (?, ?)",
+                       ("info@karavalkonkans.org.au", hashed_password))
+    conn.commit()
+    conn.close()
 
 init_db()
 
@@ -127,6 +120,7 @@ def add_user(name, email, password, phone, city, details, num_children, interest
 
     conn.commit()
     conn.close()
+
 
 @app.route('/')
 def home():
@@ -245,7 +239,7 @@ def forgot_password():
     return render_template('forgot-password.html')
 
 
-@app.route('/logout') 
+@app.route('/logout')
 def logout():
     session.clear()
     flash("Logged out successfully!", "info")
@@ -281,6 +275,14 @@ def upload_content():
 
     return redirect(url_for('admin_panel'))
 
+# @app.route('/upcoming-events')
+# def upcoming_events():
+#     conn = sqlite3.connect(DB_PATH)
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT event_id, title, description, file_path ,category, uploaded_at FROM events")
+#     events = cursor.fetchall()
+#     conn.close()
+#     return render_template('upevents.html', events=events)
 @app.route('/upcoming-events')
 def upcoming_events():
     conn = sqlite3.connect(DB_PATH)
@@ -329,10 +331,55 @@ def past_events():
 
 #     return render_template('EventReg.html', event_id=event_id)
 
+# @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
+# def event_register(event_id):
+#     if request.method == 'POST':
+#         name = request.form['name']
+#         email = request.form['email']
+#         phone = request.form['phone']
+#         num_people = request.form['people']
+#         num_adults = request.form['adults']
+#         num_children = request.form['children']
 
-@app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
+#         # Establish DB Connection
+#         conn = sqlite3.connect(DB_PATH)
+#         cursor = conn.cursor()
+
+#         # Check if user exists in users table
+#         cursor.execute("SELECT name, email, phone FROM users WHERE email = ?", (email,))
+#         user = cursor.fetchone()
+
+#         if not user:
+#             flash("You must be a registered user to sign up for events!", "danger")
+#             conn.close()
+#             return redirect(url_for('event_register', event_id=event_id))
+
+#         # Ensure entered details match database
+#         db_name, db_email, db_phone = user
+#         if db_name != name or db_email != email or db_phone != phone:
+#             flash("Entered details do not match our records!", "danger")
+#             conn.close()
+#             return redirect(url_for('event_register', event_id=event_id))
+
+#         # Save registration to database
+#         query = """
+#         INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
+#         VALUES (?, ?, ?, ?, ?, ?, ?)
+#         """
+#         cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
+
+#         # Commit and Close
+#         conn.commit()
+#         conn.close()
+
+#         flash("Registration successful!", "success")
+#         return redirect(url_for('home'))  # Redirect after successful registration
+
+#     return render_template('EventReg.html', event_id=event_id)
+
+@app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])  #  Ensure both GET & POST are allowed
 def event_register(event_id):
-    if request.method == 'POST':
+    if request.method == 'POST':  #  Ensure POST request is handled
         name = request.form['name']
         email = request.form['email']
         phone = request.form['phone']
@@ -340,29 +387,84 @@ def event_register(event_id):
         num_adults = request.form['adults']
         num_children = request.form['children']
 
-        #24
-        print(f"Event ID: {event_id}, Name: {name}, Email: {email}, Phone: {phone}, People: {num_people}, Adults: {num_adults}, Children: {num_children}")
-
-
-        # Establish DB Connection
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
-        # Save registration to database
-        query = """
-        INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """
-        cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
+        # Check if user exists
+        cursor.execute("SELECT name, email, phone FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
 
-        # Commit and Close
-        conn.commit()
-        conn.close()
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "message": "You must be a registered user to sign up for events."}), 400
 
-        return redirect(url_for('home'))  # Redirect after successful registration
+        db_name, db_email, db_phone = user
+        if db_name != name or db_email != email or db_phone != phone:
+            conn.close()
+            return jsonify({"success": False, "message": "Entered details do not match our records."}), 400
 
+        # Save registration
+        try:
+            query = """
+            INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """
+            cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
+            conn.commit()
+            conn.close()
+
+            return jsonify({"success": True, "message": "Registration successful!"}), 200  #  Return JSON response
+
+        except Exception as e:
+            conn.close()
+            return jsonify({"success": False, "message": "Registration failed. Please try again later."}), 500
+
+    #  Ensure GET requests return the registration form
     return render_template('EventReg.html', event_id=event_id)
 
+
+# @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])  #  Ensure POST is allowed
+# def event_register(event_id):
+#     if request.method == 'POST':  # Ensure it handles POST requests
+#         name = request.form['name']
+#         email = request.form['email']
+#         phone = request.form['phone']
+#         num_people = request.form['people']
+#         num_adults = request.form['adults']
+#         num_children = request.form['children']
+
+#         conn = sqlite3.connect(DB_PATH)
+#         cursor = conn.cursor()
+
+#         # Check if user exists
+#         cursor.execute("SELECT name, email, phone FROM users WHERE email = ?", (email,))
+#         user = cursor.fetchone()
+
+#         if not user:
+#             conn.close()
+#             return jsonify({"success": False, "message": "You must be a registered user to sign up for events."}), 400
+
+#         db_name, db_email, db_phone = user
+#         if db_name != name or db_email != email or db_phone != phone:
+#             conn.close()
+#             return jsonify({"success": False, "message": "Entered details do not match our records."}), 400
+
+#         # Save registration
+#         try:
+#             query = """
+#             INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
+#             VALUES (?, ?, ?, ?, ?, ?, ?)
+#             """
+#             cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
+#             conn.commit()
+#             conn.close()
+#             return jsonify({"success": True, "message": "Registration successful!"}), 200
+
+#         except Exception as e:
+#             conn.close()
+#             return jsonify({"success": False, "message": "Registration failed. Please try again later."}), 500
+
+#     return render_template('EventReg.html', event_id=event_id)
 
 
 @app.route('/admin-login', methods=['GET', 'POST'])
