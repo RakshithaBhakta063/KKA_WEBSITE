@@ -39,7 +39,7 @@ class CustomNavbar extends HTMLElement {
                         <li><a href="${contactURL}">Contact</a></li>
 
                         <li><button class="join-button">Join</button></li>
-                        <li><button class="close-menu">Close</button></li>
+                        
                         
                     </ul>
                 </nav>
