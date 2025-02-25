@@ -1,11 +1,12 @@
-function showSection(sectionId) {
-    // Hide all sections
-    const sections = document.querySelectorAll('.section');
-    sections.forEach(section => section.style.display = 'none');
-    
-    // Show selected section
-    document.getElementById(sectionId).style.display = 'block';
-}
+window.scrollToSection = function(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        console.log("Scrolling to:", sectionId);
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+        console.error("Section not found:", sectionId);
+    }
+};
 
 function searchTable(tableId, searchInputId) {
     let input, filter, table, tr, td, i, j, txtValue;
@@ -35,54 +36,32 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function generateCharts() {
-    const cityData = {};
-    const postcodeData = {};
-    let loginCount = 0;
-    let registrationCount = 0;
+    fetch('/admin')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
 
-    // Get the user table and registration table
-    const userTable = document.getElementById("userTable");
-    const registrationTable = document.getElementById("registrationTable");
+            // Extract event and city registration data
+            let eventData = JSON.parse(doc.getElementById("eventChartData").textContent);
+            let cityData = JSON.parse(doc.getElementById("eventCityChartData").textContent);
 
-    const userRows = userTable.getElementsByTagName("tr");
-    const registrationRows = registrationTable.getElementsByTagName("tr");
+            // Convert arrays into key-value objects
+            let eventChartData = {};
+            let eventCityChartData = {};
 
-    // Loop through the user table to count logins
-    for (let i = 1; i < userRows.length; i++) {
-        let cells = userRows[i].getElementsByTagName("td");
-        let city = cells[3].innerText.trim(); // Nearest Capital City
-        let postcode = cells[4].innerText.trim(); // Postcode
+            eventData.forEach(event => eventChartData[event[0]] = event[1]);
+            cityData.forEach(city => eventCityChartData[city[0]] = city[1]);
 
-        // Count city and postcode data
-        cityData[city] = (cityData[city] || 0) + 1;
-        postcodeData[postcode] = (postcodeData[postcode] || 0) + 1;
+            console.log("Event Registration Data:", eventChartData); // Debugging
+            console.log("Event Registrations by City Data:", eventCityChartData); // Debugging
 
-        // Count logins (based on user rows)
-        loginCount++;
-    }
-
-    // Loop through the registration table to count actual registrations
-    for (let i = 1; i < registrationRows.length; i++) {
-        let cells = registrationRows[i].getElementsByTagName("td");
-
-        // Check if the "Number of People" column (4th column) is greater than 0
-        let numberOfPeople = parseInt(cells[3].innerText.trim(), 10); // Number of People column
-
-        // If a valid number of people exists, increment registration count
-        if (numberOfPeople > 0) {
-            registrationCount++;
-        }
-    }
-
-    // Update the analytics summary on the page
-    document.getElementById("totalLogins").textContent = loginCount;
-    document.getElementById("totalRegistrations").textContent = registrationCount;
-
-    // Create the pie charts
-    createPieChart("cityChart", "Users by Capital City", cityData);
-    createPieChart("postcodeChart", "Users by Postcode", postcodeData);
+            // Generate charts
+            createPieChart("eventChart", "Event Registrations", eventChartData);
+            createPieChart("eventCityChart", "Event Registrations by City", eventCityChartData);
+        })
+        .catch(error => console.error("Error fetching chart data:", error));
 }
-
 
 
 function createPieChart(canvasId, title, data) {
@@ -123,6 +102,7 @@ function createPieChart(canvasId, title, data) {
         },
     });
 }
+
 
 
 document.getElementById("exportPDF").addEventListener("click", function () {

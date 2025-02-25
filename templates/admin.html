@@ -22,12 +22,17 @@
 
     <div class="container">
         <div class="sidebar">
-            <button class="tab-button" onclick="showSection('adminProfile')">Admin Profile</button>
+            <!-- <button class="tab-button" onclick="showSection('adminProfile')">Admin Profile</button>
             <button class="tab-button" onclick="showSection('Dashboard')">Dashboard</button>
-            <button class="tab-button" onclick="showSection('Content Management')">Content Management</button>
-            <button class="tab-button" onclick="showSection('userLogin')">User Login Details</button>
-            <button class="tab-button" onclick="showSection('registrations')">Registrations</button>
-            
+            <button class="tab-button" onclick="showSection('Content Management')">Content Management</button> -->
+            <!-- <button class="tab-button" onclick="showSection('userLogin')">User Login Details</button> -->
+            <!-- <button class="tab-button" onclick="showSection('registrations')">Registrations</button> -->
+            <button class="tab-button" onclick="scrollToSection('adminProfile')">Admin Profile</button>
+<button class="tab-button" onclick="scrollToSection('Dashboard')">Dashboard</button>
+<button class="tab-button" onclick="scrollToSection('Content Management')">Content Management</button>
+<button class="tab-button" onclick="scrollToSection('registrations')">Registrations</button>
+
+
             
         </div>
 
@@ -41,8 +46,8 @@
 
                     </div>
                     <div class="profile-info">
-                        <p><strong>Name:</strong> Admin Name</p>
-                        <p><strong>Email:</strong> admin@example.com</p>
+                        <!-- <p><strong>Name:</strong> Admin Name</p> -->
+                        <p><strong>Email:</strong> info@karavalkonkans.org.au</p>
                         <p><strong>Role:</strong> Administrator</p>
                     </div>
                 </div>
@@ -52,23 +57,47 @@
             <div class="section" id="Dashboard">
                 <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Dashboard</h3>
                 <div class="analytics-summary">
-                    <div class="analytics-card">
-                        <h4>Total Logins</h4>
-                        <p id="totalLogins">0</p> <!-- Dynamically updated -->
-                    </div>
+                    <!-- <div class="analytics-card"> -->
+                        <!-- <h4>Total Logins</h4>
+                        <p id="totalLogins">0</p>  -->
+                    <!-- </div> -->
                     <div class="analytics-card">
                         <h4>Total Registrations</h4>
-                        <p id="totalRegistrations">0</p> <!-- Dynamically updated -->
+                        <p id="totalUsers">{{ total_users }}</p> <!-- Updated -->
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Total Event Registrations</h4>
+                        <p id="totalEventRegistrations">{{ total_event_registrations }}</p> <!-- Updated -->
                     </div>
                 </div>
+
+                <h3 style="margin-top: 20px;">Event-wise Registrations</h3>
+<table class="event-registrations-table">
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Number of People Registered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event, count in event_chart_data %}
+        <tr>
+            <td>{{ event }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
                 <div class="chart-container">
-                    <h3>Users by Capital City</h3>
-                    <canvas id="cityChart"></canvas>
+                    <h3>Event Registrations</h3>
+                    <canvas id="eventChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3>Users by Postcode</h3>
-                    <canvas id="postcodeChart"></canvas>
+                    <h3>Event Registrations by City</h3>
+                    <canvas id="eventCityChart"></canvas>
                 </div>
+                
             </div>
 
             <!--content uploading-->
@@ -101,7 +130,7 @@
 
 
             <!-- User Login Details Section -->
-            <div class="section" id="userLogin">
+            <!-- <div class="section" id="userLogin">
                 <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">User Login Details</h3>
                 <input type="text" id="userSearch" placeholder="Search by name" onkeyup="searchTable('userTable', 'userSearch')">
                 
@@ -109,7 +138,7 @@
                 <table id="userTable">
                     <thead>
                         <tr>
-                            <th>Serial Number</th> <!-- Serial Number Column -->
+                            <th>Serial Number</th> 
                             <th>Name</th>
                             <th>Email</th>
                             <th>Nearest Capital City</th>
@@ -122,9 +151,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Add user data rows here -->
+                       
                         <tr>
-                            <td>1</td> <!-- Serial Number -->
+                            <td>1</td> 
                             <td>John Doe</td>
                             <td>john.doe@example.com</td>
                             <td>Melbourne</td>
@@ -136,7 +165,7 @@
                             <td>Looking forward to meeting others.</td>
                         </tr>
                         <tr>
-                            <td>2</td> <!-- Serial Number -->
+                            <td>2</td> 
                             <td>Rohan Doe</td>
                             <td>Rohan.doe@example.com</td>
                             <td>Adelaide</td>
@@ -148,7 +177,7 @@
                             <td>Looking forward to meeting others.</td>
                         </tr>
                         <tr>
-                            <td>3</td> <!-- Serial Number -->
+                            <td>3</td> 
                             <td>Ananya</td>
                             <td>Ananya@example.com</td>
                             <td>Melbourne</td>
@@ -161,7 +190,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> -->
             
             <!-- Registrations Section -->
             <div class="section" id="registrations">
@@ -186,12 +215,12 @@
                         {% for reg in event_registrations %}
                         <tr>
                             <td>{{ reg[3] }}</td> <!-- Name -->
-                            <td>{{ reg[4] }}</td> <!-- Email -->
-                            <td>{{ reg[5] }}</td> <!-- Phone -->
-                            <td>{{ reg[0] }}</td> <!-- Registration ID -->
-                            <td>{{ reg[1] }}</td> <!-- Event ID -->
-                            <td>{{ reg[2] }}</td> <!-- Event Title -->
-                            <td>{{ reg[6] }}</td> <!-- Number of People -->
+            <td>{{ reg[4] }}</td> <!-- Email -->
+            <td>{{ reg[5] }}</td> <!-- Phone -->
+            <td>{{ reg[0] }}</td> <!-- Registration ID -->
+            <td>{{ reg[1] }}</td> <!-- Event ID -->
+            <td>{{ reg[2] }}</td> <!-- Event Title -->
+            <td>{{ reg[6] }}</td> <!-- Number of People -->
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -240,6 +269,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     
-    <script src="{{ url_for('static', filename='css/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/index.js') }}" defer></script>
+    <script type="application/json" id="eventChartData">
+        {{ event_chart_data | tojson }}
+    </script>
+    <script type="application/json" id="eventCityChartData">
+        {{ event_city_chart_data | tojson }}
+    </script>
+    
+    <!-- <script type="application/json" id="eventCityChartData">
+        {{ event_city_chart_data | tojson }}
+    </script> -->
 </body>   
 </html>
