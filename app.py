@@ -572,12 +572,63 @@ def admin_panel():
         ''')
         event_registrations = cursor.fetchall()
 
+        #new
+        # Fetch total registered users
+        cursor.execute("SELECT COUNT(*) FROM users")
+        total_users = cursor.fetchone()[0]
+
+        # # Fetch total event registrations (sum of num_people)
+        # cursor.execute("SELECT SUM(num_people) FROM event_registrations")
+        # total_event_registrations = cursor.fetchone()[0] or 0  # Default to 0 if None
+
+        # # Fetch event-wise registration counts
+        # cursor.execute('''
+        #     SELECT e.title, SUM(er.num_people)
+        #     FROM event_registrations er
+        #     JOIN events e ON er.event_id = e.event_id
+        #     GROUP BY e.title
+        # ''')
+        # event_chart_data = cursor.fetchall()
+         # Fetch total number of event registrations (sum of num_people)
+        cursor.execute("SELECT COALESCE(SUM(num_people), 0) FROM event_registrations")
+        total_event_registrations = cursor.fetchone()[0]
+
+        # Fetch event-wise registration counts (each event's total attendees)
+        cursor.execute('''
+            SELECT e.title, COALESCE(SUM(er.num_people), 0)
+            FROM event_registrations er
+            JOIN events e ON er.event_id = e.event_id
+            GROUP BY e.title
+        ''')
+        event_chart_data = cursor.fetchall()
+
+        # # Fetch city-wise user registrations
+        # cursor.execute('''
+        #     SELECT COALESCE(nearest_city, 'None'), COUNT(*)
+        #     FROM family_details
+        #     GROUP BY nearest_city
+        # ''')
+        # city_chart_data = cursor.fetchall()
+         # Fetch event registrations grouped by city
+        cursor.execute('''
+            SELECT COALESCE(f.nearest_city, 'None'), COALESCE(SUM(er.num_people), 0)
+            FROM event_registrations er
+            JOIN users u ON er.email = u.email
+            LEFT JOIN family_details f ON u.user_id = f.user_id
+            GROUP BY f.nearest_city
+        ''')
+        event_city_chart_data = cursor.fetchall()
+
     return render_template(
         "admin.html",
         registrations=registrations,
         upcoming_events=upcoming_events,
         past_events=past_events,
-        event_registrations=event_registrations  # Pass event registrations to the template
+        event_registrations=event_registrations,  # Pass event registrations to the template
+        total_users=total_users,
+        total_event_registrations=total_event_registrations,
+        event_chart_data=event_chart_data,
+        event_city_chart_data=event_city_chart_data
     )
 
 
