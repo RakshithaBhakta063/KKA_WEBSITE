@@ -113,12 +113,12 @@ body {
         display: none;
         flex-direction: column;
         position: absolute;
-        top: 90px;
+        top: 60px;
         right: 0;
         background-color:#333;
-        width: 80%;
+        width: 100%;
         text-align: center;
-        padding: 5px 0px;
+        padding: 10px 0px;
     }
 
     .nav-links.active {
