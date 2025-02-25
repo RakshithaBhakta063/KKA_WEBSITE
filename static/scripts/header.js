@@ -36,79 +36,70 @@ class CustomNavbar extends HTMLElement {
                             </ul>
                         </li>
                         <li><a href="${galleryURL}">Gallery</a></li>
-                        <li><a href="${contactURL}">Contact</a></li>
-
+                        <li><a href="${contactURL}" class="contact-link">Contact</a></li>
                         <li><button class="join-button">Join</button></li>
-                        
-                        
                     </ul>
                 </nav>
             </header>
         `;
-        // Handle "Contact" link scrolling instead of navigating
-        const contactLink = this.querySelector('a[href="contact"]');
-if (contactLink) {
-    contactLink.addEventListener("click", (event) => {
-        event.preventDefault(); // Stop default behavior
-
-        const contact = document.getElementById("contact");
-
-        if (contact) {
-            // If footer exists on the page, scroll smoothly
-            contact.scrollIntoView({ behavior: "smooth" });
-        } else {
-            // Redirect to home with #footer to land on the right page
-            window.location.href = homeURL + "contact";
-        }
-    });
-}
-
-
-
-
-
-        
-
-// Ensure other links navigate correctly
-const navLinks = this.querySelectorAll(".nav-links a");
-navLinks.forEach(link => {
-    if (link.getAttribute("href") !== "#footer") {
-        link.addEventListener("click", function () {
-            window.location.href = this.href; // Allow normal navigation for other links
-        });
-    }
-});
-
 
         // Get necessary elements
         const menuToggle = this.querySelector('.menu-toggle');
-        const navLinksContainer = this.querySelector('.nav-links');
-        const dropdown = this.querySelector('.dropdown-content');
+        const navLinks = this.querySelector('.nav-links');
+        const dropdownButton = this.querySelector('.dropbtn');
+        const dropdownMenu = this.querySelector('.dropdown-content');
         const joinButton = this.querySelector('.join-button');
-        const closeMenuButton = this.querySelector('.close-menu');
+        const contactLink = this.querySelector('.contact-link');
 
-        // Toggle menu in mobile view
-        menuToggle.addEventListener('click', () => {
-            navLinksContainer.classList.toggle('active');
-        });
+        // Toggle mobile menu
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
 
-        // Close dropdown and mobile menu when "Join" button is clicked in mobile view
-        joinButton.addEventListener('click', () => {
-            if (window.innerWidth <= 768) {
-                dropdown.style.visibility = "hidden";
-                dropdown.style.opacity = "0";
-                navLinks.classList.remove('active');
+        // Dropdown toggle for "Events"
+        if (dropdownButton) {
+            dropdownButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent event from bubbling to window
+                dropdownMenu.classList.toggle('show');
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove('show');
             }
         });
 
-        // Close entire mobile menu when "Close" button is clicked
-        closeMenuButton.addEventListener('click', () => {
-            if (window.innerWidth <= 768) {
-                navLinks.classList.remove('active');
-            }
-        });
+        // Close menu when clicking "Join" on mobile
+        if (joinButton) {
+            joinButton.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+
+        // Contact page event listener (Scroll or Redirect)
+        if (contactLink) {
+            contactLink.addEventListener("click", (event) => {
+                event.preventDefault(); // Stop default link behavior
+
+                const contactSection = document.getElementById("contact");
+
+                if (contactSection) {
+                    // Smooth scroll if "contact" section exists
+                    contactSection.scrollIntoView({ behavior: "smooth" });
+                } else {
+                    // Redirect to the contact page
+                    window.location.href = contactURL;
+                }
+            });
+        }
     }
 }
 
 // Define the custom element
-customElements.define('custom-navbar', CustomNavbar);
+customElements.define("custom-navbar", CustomNavbar);
