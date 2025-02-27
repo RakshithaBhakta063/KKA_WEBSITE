@@ -287,7 +287,7 @@ def upload_content():
 def upcoming_events():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT event_id, title, description, file_path ,category, uploaded_at FROM events")
+    cursor.execute("SELECT event_id, title, description, file_path,category FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
     events = cursor.fetchall()
     conn.close()
     return render_template('upevents.html', events=events)
@@ -558,7 +558,7 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         registrations = cursor.fetchall()
 
         # Fetch upcoming events
-        cursor.execute("SELECT title, description, file_path FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
+        cursor.execute("SELECT event_id, title, description FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
         upcoming_events = cursor.fetchall()
 
         # Fetch past events
@@ -759,6 +759,25 @@ def gallery():
 def contact():
     return render_template('contact.html')
 
+@app.route('/delete-event', methods=['POST'])
+def delete_event():
+    try:
+        data = request.json
+        event_id = data.get('id')
+        if not event_id:
+            return jsonify({"success": False, "error": "No event ID provided."})
+
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM events WHERE event_id = ?", (event_id,))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True, "message": "Event deleted successfully!"})
+
+    except Exception as e:
+        print("Delete Event Error:", str(e))
+        return jsonify({"success": False, "error": str(e)})
 
 
 if __name__ == '__main__':

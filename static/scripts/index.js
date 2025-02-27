@@ -181,3 +181,24 @@ function fetchEventRegistrations() {
     })
     .catch(error => console.error("Error loading registrations:", error));
 }
+
+
+function deleteEvent(eventId) {
+    fetch('/delete-event', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: eventId })  // Send event ID properly
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Event deleted successfully!");
+            location.reload();  // Refresh page after delete
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
