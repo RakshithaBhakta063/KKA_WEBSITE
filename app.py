@@ -544,13 +544,15 @@ def admin_panel():
         # Fetch user registrations with family details and interests
         query = '''
         SELECT 
-            u.user_id, u.name, u.email, u.phone,
-            f.family_id, f.nearest_city, f.details, f.num_children,
-            COALESCE(GROUP_CONCAT(i.interest, ', '), 'None') AS interests
-        FROM users u
-        LEFT JOIN family_details f ON u.user_id = f.user_id
-        LEFT JOIN interests i ON f.family_id = i.family_id
-        GROUP BY u.user_id, f.family_id;
+        u.user_id AS UserID, 
+    u.name AS Name, 
+    u.email AS Email, 
+    u.phone AS Phone,
+    f.nearest_city AS NearestCity, 
+    f.details AS Details, 
+    f.num_children AS NumberOfChildren
+FROM users u
+LEFT JOIN family_details f ON u.user_id = f.user_id;
         '''
         cursor.execute(query)
         registrations = cursor.fetchall()
