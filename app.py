@@ -379,6 +379,17 @@ def past_events():
 
 @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])  #  Ensure both GET & POST are allowed
 def event_register(event_id):
+    if 'user_id' not in session:
+        flash("Please log in to register for an event!", "warning")
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Fetch user details from the session user_id
+    cursor.execute("SELECT name, email, phone FROM users WHERE user_id = ?", (session['user_id'],))
+    user = cursor.fetchone()
+    conn.close()
     if request.method == 'POST':  #  Ensure POST request is handled
         name = request.form['name']
         email = request.form['email']
@@ -778,6 +789,111 @@ def delete_event():
     except Exception as e:
         print("Delete Event Error:", str(e))
         return jsonify({"success": False, "error": str(e)})
+
+
+@app.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        flash("Please log in to view your profile.", "danger")
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Fetch user details
+    cursor.execute('''
+        SELECT u.name, u.email, u.phone, f.nearest_city, f.details, f.num_children, 
+               GROUP_CONCAT(i.interest) AS interests
+        FROM users u
+        LEFT JOIN family_details f ON u.user_id = f.user_id
+        LEFT JOIN interests i ON f.family_id = i.family_id
+        WHERE u.user_id = ?
+        GROUP BY u.user_id
+    ''', (user_id,))
+    user_data = cursor.fetchone()
+
+    if not user_data:
+        flash("User not found!", "danger")
+        return redirect(url_for('home'))
+
+    # Convert tuple to dictionary
+    user_info = {
+        "name": user_data[0],
+        "email": user_data[1],
+        "phone": user_data[2],
+        "nearest_city": user_data[3],
+        "details": user_data[4],
+        "num_children": user_data[5],
+        "interests": user_data[6] or ""
+    }
+
+    # Fetch registered events
+    cursor.execute('''
+        SELECT e.title, e.uploaded_at 
+        FROM event_registrations er
+        JOIN events e ON er.event_id = e.event_id
+        WHERE er.email = ?
+    ''', (user_data[1],))
+    user_events = [{"title": row[0], "date": row[1]} for row in cursor.fetchall()]
+
+    conn.close()
+    return render_template('profile.html', user_data=user_info, user_events=user_events)
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Please log in first."}), 401
+
+    user_id = session['user_id']
+    data = request.form
+    name = data.get('name')
+    phone = data.get('phone')
+    city = data.get('city')
+    family_details = data.get('family_details')
+    num_children = data.get('num_children', 0)
+    interests = data.get('interests')
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Update user details
+    cursor.execute('''
+        UPDATE users SET name = ?, phone = ? WHERE user_id = ?
+    ''', (name, phone, user_id))
+
+    # Update family details
+    cursor.execute('''
+        UPDATE family_details SET nearest_city = ?, details = ?, num_children = ? WHERE user_id = ?
+    ''', (city, family_details, num_children, user_id))
+
+    # Update interests
+    cursor.execute("DELETE FROM interests WHERE family_id IN (SELECT family_id FROM family_details WHERE user_id = ?)", (user_id,))
+    if interests:
+        for interest in interests.split(","):
+            cursor.execute("INSERT INTO interests (family_id, interest) VALUES ((SELECT family_id FROM family_details WHERE user_id = ?), ?)", (user_id, interest.strip()))
+
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True, "message": "Profile updated successfully!"})
+
+@app.route('/get-user-details')
+def get_user_details():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "User not logged in"}), 401
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, email, phone FROM users WHERE user_id = ?", (session['user_id'],))
+    user = cursor.fetchone()
+    conn.close()
+
+    if user:
+        return jsonify({"success": True, "name": user[0], "email": user[1], "phone": user[2]})
+    else:
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+
 
 
 if __name__ == '__main__':

@@ -1,11 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
     updateEventDetails();
-    
+    autoFillUserDetails(); // New function to prefill user details
     const form = document.getElementById("registrationForm");
     if (form) {
         form.addEventListener("submit", submitForm);
     }
 });
+// Function to prefill user details
+function autoFillUserDetails() {
+    fetch('/get-user-details')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("name").value = data.name;
+                document.getElementById("email").value = data.email;
+                document.getElementById("phone").value = data.phone;
+            }
+        })
+        .catch(error => console.error("Error fetching user details:", error));
+}
 
 function updateEventDetails() {
     const urlParams = new URLSearchParams(window.location.search);

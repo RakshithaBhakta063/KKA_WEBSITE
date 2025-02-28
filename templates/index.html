@@ -8,6 +8,7 @@
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Header.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/nheader.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
  
@@ -24,7 +25,11 @@
     data-gallery="{{ url_for('gallery') }}"
     data-contact="{{ url_for('contact') }}"
     data-logo="{{ url_for('static', filename='images/logo.png') }}"
-    data-menu-icon="{{ url_for('static', filename='images/hamburger.png') }}">
+    data-menu-icon="{{ url_for('static', filename='images/hamburger.png') }}"
+    data-authenticated="{{ 'true' if 'user_id' in session else 'false' }}"
+    data-profile="{{ url_for('profile') }}"
+    data-logout="{{ url_for('logout') }}"
+    data-login="{{ url_for('login') }}">
 </custom-navbar>
 
     <section id="mainhead">

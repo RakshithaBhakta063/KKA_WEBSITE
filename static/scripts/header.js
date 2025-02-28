@@ -13,6 +13,13 @@ class CustomNavbar extends HTMLElement {
         const logoURL = this.dataset.logo;
         const menuIconURL = this.dataset.menuIcon;
 
+        // Check user session using a global JS variable set in the Flask template
+        const isAuthenticated = this.dataset.authenticated === "true"; // Flask will pass "true" or "false"
+        const profileURL = this.dataset.profile;
+        const logoutURL = this.dataset.logout;
+        const loginURL = this.dataset.login;
+
+
         this.innerHTML = `
             <header>
                 <nav class="navbar">
@@ -39,6 +46,14 @@ class CustomNavbar extends HTMLElement {
                         <li><a href="${contactURL}" class="contact-link">Contact</a></li>
                         <li><button class="join-button">Join</button></li>
                     </ul>
+                    <div class="auth-links">
+                        ${
+                            isAuthenticated
+                                ? `<a href="${profileURL}" class="action-button">Profile</a>
+                                   <button class="action-button" id="logout-btn">Logout</button>`
+                                : `<a href="${loginURL}" class="action-button">Login</a>`
+                        }
+                    </div>
                 </nav>
             </header>
         `;
@@ -50,6 +65,7 @@ class CustomNavbar extends HTMLElement {
         const dropdownMenu = this.querySelector('.dropdown-content');
         const joinButton = this.querySelector('.join-button');
         const contactLink = this.querySelector('.contact-link');
+        const logoutButton = this.querySelector('#logout-btn'); // Logout button
 
         // Toggle mobile menu
         if (menuToggle) {
@@ -98,8 +114,16 @@ class CustomNavbar extends HTMLElement {
                 }
             });
         }
+        // Handle Logout Button click
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                // Perform logout action (e.g., redirect to Flask logout route)
+                window.location.href = logoutURL; // Redirect to logout route (Flask endpoint)
+            });
+        }
     }
 }
+
 
 // Define the custom element
 customElements.define("custom-navbar", CustomNavbar);
