@@ -54,34 +54,27 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
     <section>
-        <div class="gallery">
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/osmitay.jpg') }}" alt="Osmitay Movie Review" loading="lazy">
-                <div class="card-content">
-                    <h3>Osmitay Movie Review</h3>
-                    <p>Osmitay movie was premiered by Karaval Konkans Australia in Perth in November 2023. Look at the reviews of our people who watched the movie.</p>
-                </div>
+        {% if gallery_images %}
+            <div class="gallery">
+                {% for image in gallery_images %}
+                    <div class="card">
+                        <img src="{{ url_for('static', filename=image.file_path) }}" 
+                             alt="{{ image.title }}" loading="lazy">
+                        <div class="card-content">
+                            <h3>{{ image.title }}</h3> <!-- Title -->
+                            <p>{{ image.description }}</p> <!-- Description -->
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/blooddonation.jpeg') }}" alt="Blood Donation Drive" loading="lazy">
-                <div class="card-content">
-                    <h3>Blood Donation Drive</h3>
-                    <p>Karaval Konkans Australia ran a successful blood donation drive during Lent. We now plan to have it every year and help in every way we can.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/crib.png') }}" alt="Christmas Crib Competition" loading="lazy">
-                <div class="card-content">
-                    <h3>Christmas Crib Competition</h3>
-                    <p>Creative ideas, originality, and the use of recycled materials were points of criteria for judging the winners.</p>
-                </div>
-            </div>
-        </div>
+        {% else %}
+            <p>No images available in the gallery.</p>
+        {% endif %}
     </section>
+    
+    
+    
 
     <!-- Footer Section -->
     <section>

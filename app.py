@@ -74,6 +74,14 @@ def init_db():
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL
     );
+    
+    CREATE TABLE IF NOT EXISTS gallery (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    file_path TEXT NOT NULL
+    );
+
     ''')
     # Insert admin user if not exists
     cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
@@ -187,53 +195,6 @@ def register():
 
     return render_template('JoinFamReg.html')
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         name = request.form['name']
-#         email = request.form['email']
-#         password = generate_password_hash(request.form['password'])
-#         phone = request.form['phone']
-
-#         conn = sqlite3.connect(DB_PATH)
-#         cursor = conn.cursor()
-#         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-#         existing_user = cursor.fetchone()
-
-#         if existing_user:
-#             flash("Email already exists!", "danger")
-#             return redirect(url_for('register'))
-
-#         cursor.execute("INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)", 
-#                        (name, email, password, phone))
-#         conn.commit()
-#         conn.close()
-
-#         flash("Admin registered successfully!", "success")
-#         return redirect(url_for('login'))
-
-#     return render_template('JoinFamReg.html')
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         password = request.form['password']
-
-#         conn = sqlite3.connect(DB_PATH)
-#         cursor = conn.cursor()
-#         cursor.execute("SELECT user_id, password FROM users WHERE email = ?", (email,))
-#         user = cursor.fetchone()
-#         conn.close()
-
-#         if user and check_password_hash(user[1], password):
-#             session['user_id'] = user[0]
-#             flash("Login successful!", "success")
-#             return redirect(url_for('home'))
-#         else:
-#             flash("Incorrect email or password!", "danger")
-
-#     return render_template('login.html')
 @app.route('/forgot-password')
 def forgot_password():
     return render_template('forgot-password.html')
@@ -302,80 +263,6 @@ def past_events():
     conn.close()
     return render_template('Past_Events.html', events=events)
 
-# @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
-# def event_register(event_id):
-#     if request.method == 'POST':
-#         name = request.form['name']
-#         email = request.form['email']
-#         phone = request.form['phone']
-#         num_people = request.form['people']
-#         num_adults = request.form['adults']
-#         num_children = request.form['children']
-
-#         # Establish DB Connection
-#         conn = sqlite3.connect(DB_PATH)
-#         cursor = conn.cursor()
-
-#         # Save registration to database
-#         query = """
-#         INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
-#         VALUES (?, ?, ?, ?, ?, ?, ?)
-#         """
-#         cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
-
-#         # Commit and Close
-#         conn.commit()
-#         conn.close()
-
-#         return redirect(url_for('home'))  # Redirect after successful registration
-
-#     return render_template('EventReg.html', event_id=event_id)
-
-# @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])
-# def event_register(event_id):
-#     if request.method == 'POST':
-#         name = request.form['name']
-#         email = request.form['email']
-#         phone = request.form['phone']
-#         num_people = request.form['people']
-#         num_adults = request.form['adults']
-#         num_children = request.form['children']
-
-#         # Establish DB Connection
-#         conn = sqlite3.connect(DB_PATH)
-#         cursor = conn.cursor()
-
-#         # Check if user exists in users table
-#         cursor.execute("SELECT name, email, phone FROM users WHERE email = ?", (email,))
-#         user = cursor.fetchone()
-
-#         if not user:
-#             flash("You must be a registered user to sign up for events!", "danger")
-#             conn.close()
-#             return redirect(url_for('event_register', event_id=event_id))
-
-#         # Ensure entered details match database
-#         db_name, db_email, db_phone = user
-#         if db_name != name or db_email != email or db_phone != phone:
-#             flash("Entered details do not match our records!", "danger")
-#             conn.close()
-#             return redirect(url_for('event_register', event_id=event_id))
-
-#         # Save registration to database
-#         query = """
-#         INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
-#         VALUES (?, ?, ?, ?, ?, ?, ?)
-#         """
-#         cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
-
-#         # Commit and Close
-#         conn.commit()
-#         conn.close()
-
-#         flash("Registration successful!", "success")
-#         return redirect(url_for('home'))  # Redirect after successful registration
-
-#     return render_template('EventReg.html', event_id=event_id)
 
 @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])  #  Ensure both GET & POST are allowed
 def event_register(event_id):
@@ -434,48 +321,7 @@ def event_register(event_id):
     return render_template('EventReg.html', event_id=event_id)
 
 
-# @app.route('/EventReg/<int:event_id>', methods=['GET', 'POST'])  #  Ensure POST is allowed
-# def event_register(event_id):
-#     if request.method == 'POST':  # Ensure it handles POST requests
-#         name = request.form['name']
-#         email = request.form['email']
-#         phone = request.form['phone']
-#         num_people = request.form['people']
-#         num_adults = request.form['adults']
-#         num_children = request.form['children']
 
-#         conn = sqlite3.connect(DB_PATH)
-#         cursor = conn.cursor()
-
-#         # Check if user exists
-#         cursor.execute("SELECT name, email, phone FROM users WHERE email = ?", (email,))
-#         user = cursor.fetchone()
-
-#         if not user:
-#             conn.close()
-#             return jsonify({"success": False, "message": "You must be a registered user to sign up for events."}), 400
-
-#         db_name, db_email, db_phone = user
-#         if db_name != name or db_email != email or db_phone != phone:
-#             conn.close()
-#             return jsonify({"success": False, "message": "Entered details do not match our records."}), 400
-
-#         # Save registration
-#         try:
-#             query = """
-#             INSERT INTO event_registrations (event_id, name, email, phone, num_people, adults, children)
-#             VALUES (?, ?, ?, ?, ?, ?, ?)
-#             """
-#             cursor.execute(query, (event_id, name, email, phone, num_people, num_adults, num_children))
-#             conn.commit()
-#             conn.close()
-#             return jsonify({"success": True, "message": "Registration successful!"}), 200
-
-#         except Exception as e:
-#             conn.close()
-#             return jsonify({"success": False, "message": "Registration failed. Please try again later."}), 500
-
-#     return render_template('EventReg.html', event_id=event_id)
 
 
 @app.route('/admin-login', methods=['GET', 'POST'])
@@ -505,44 +351,6 @@ def admin_login():
 
 
 
-# Admin Panel Route
-# @app.route('/admin')
-# def admin_panel():
-#     if 'admin_id' not in session:
-#         flash("Please log in as an admin to access this page.", "danger")
-#         return redirect(url_for('admin_login'))
-
-#     with sqlite3.connect(DB_PATH) as conn:
-#         cursor = conn.cursor()
-
-#         # Fetch user registrations with family details and interests
-#         query = '''
-#         SELECT 
-#             u.user_id, u.name, u.email, u.phone,
-#             f.family_id, f.nearest_city, f.details, f.num_children,
-#             COALESCE(GROUP_CONCAT(i.interest, ', '), 'None') AS interests
-#         FROM users u
-#         LEFT JOIN family_details f ON u.user_id = f.user_id
-#         LEFT JOIN interests i ON f.family_id = i.family_id
-#         GROUP BY u.user_id, f.family_id;
-#         '''
-#         cursor.execute(query)
-#         registrations = cursor.fetchall()
-
-#         # Fetch upcoming events
-#         cursor.execute("SELECT title, description, file_path FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
-#         upcoming_events = cursor.fetchall()
-
-#         # Fetch past events
-#         cursor.execute("SELECT title, description, file_path FROM events WHERE category='past' ORDER BY uploaded_at DESC")
-#         past_events = cursor.fetchall()
-
-#     return render_template(
-#         "admin.html",
-#         registrations=registrations,
-#         upcoming_events=upcoming_events,
-#         past_events=past_events
-#     )
 @app.route('/admin')
 def admin_panel():
     if 'admin_id' not in session:
@@ -590,19 +398,6 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         cursor.execute("SELECT COUNT(*) FROM users")
         total_users = cursor.fetchone()[0]
 
-        # # Fetch total event registrations (sum of num_people)
-        # cursor.execute("SELECT SUM(num_people) FROM event_registrations")
-        # total_event_registrations = cursor.fetchone()[0] or 0  # Default to 0 if None
-
-        # # Fetch event-wise registration counts
-        # cursor.execute('''
-        #     SELECT e.title, SUM(er.num_people)
-        #     FROM event_registrations er
-        #     JOIN events e ON er.event_id = e.event_id
-        #     GROUP BY e.title
-        # ''')
-        # event_chart_data = cursor.fetchall()
-         # Fetch total number of event registrations (sum of num_people)
         cursor.execute("SELECT COALESCE(SUM(num_people), 0) FROM event_registrations")
         total_event_registrations = cursor.fetchone()[0]
 
@@ -615,14 +410,6 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         ''')
         event_chart_data = cursor.fetchall()
 
-        # # Fetch city-wise user registrations
-        # cursor.execute('''
-        #     SELECT COALESCE(nearest_city, 'None'), COUNT(*)
-        #     FROM family_details
-        #     GROUP BY nearest_city
-        # ''')
-        # city_chart_data = cursor.fetchall()
-         # Fetch event registrations grouped by city
         cursor.execute('''
             SELECT COALESCE(f.nearest_city, 'None'), COALESCE(SUM(er.num_people), 0)
             FROM event_registrations er
@@ -763,7 +550,55 @@ def news():
 
 @app.route('/gallery')
 def gallery():
-    return render_template('gallery.html')
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Fetch gallery images from the new gallery table
+    cursor.execute("SELECT id, title, description, file_path FROM gallery")
+    gallery_images = [dict(id=row[0], title=row[1], description=row[2], file_path=row[3]) for row in cursor.fetchall()]
+    
+    conn.close()
+    return render_template('gallery.html', gallery_images=gallery_images)
+
+@app.route('/upload_gimages', methods=['POST'])
+def upload_gimages():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        image = request.files['image']
+
+        if image and title and description:
+            image_path = os.path.join(app.config["UPLOAD_FOLDER"], image.filename)
+            image.save(image_path)
+
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO gallery (title, description, file_path) VALUES (?, ?, ?)", 
+                           (title, description, f"uploads/{image.filename}"))
+            conn.commit()
+            conn.close()
+
+    return redirect(url_for('gallery'))
+
+@app.route('/delete_image/<int:image_id>', methods=['POST'])
+def delete_image(image_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Get the file path before deleting
+    cursor.execute("SELECT file_path FROM gallery WHERE id = ?", (image_id,))
+    image_data = cursor.fetchone()
+    
+    if image_data:
+        image_path = os.path.join("static", image_data[0])
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+        cursor.execute("DELETE FROM gallery WHERE id = ?", (image_id,))
+        conn.commit()
+    
+    conn.close()
+    return redirect(url_for('gallery'))
 
 
 @app.route('/contact')
