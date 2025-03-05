@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Header.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/nheader.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
     
     <!-- FontAwesome Icons -->
@@ -26,7 +27,11 @@
         data-gallery="{{ url_for('gallery') }}"
         data-contact="{{ url_for('contact') }}"
         data-logo="{{ url_for('static', filename='images/logo.png') }}"
-        data-menu-icon="{{ url_for('static', filename='images/hamburger.png') }}">
+        data-menu-icon="{{ url_for('static', filename='images/hamburger.png') }}"
+        data-authenticated="{{ 'true' if 'user_id' in session else 'false' }}"
+    data-profile="{{ url_for('profile') }}"
+    data-logout="{{ url_for('logout') }}"
+    data-login="{{ url_for('login') }}">
     </custom-navbar>
 
     <!-- Main Section -->

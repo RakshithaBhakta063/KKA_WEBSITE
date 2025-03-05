@@ -419,6 +419,10 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         ''')
         event_city_chart_data = cursor.fetchall()
 
+        # Fetch gallery images
+        cursor.execute("SELECT id, title, description, file_path FROM gallery")
+        gallery_images = cursor.fetchall()
+
     return render_template(
         "admin.html",
         registrations=registrations,
@@ -428,7 +432,8 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         total_users=total_users,
         total_event_registrations=total_event_registrations,
         event_chart_data=event_chart_data,
-        event_city_chart_data=event_city_chart_data
+        event_city_chart_data=event_city_chart_data,
+        gallery_images=gallery_images
     )
 
 
@@ -580,7 +585,26 @@ def upload_gimages():
 
     return redirect(url_for('gallery'))
 
-@app.route('/delete_image/<int:image_id>', methods=['POST'])
+# @app.route('/delete_image/<int:image_id>', methods=['POST'])
+# def delete_image(image_id):
+#     conn = sqlite3.connect(DB_PATH)
+#     cursor = conn.cursor()
+    
+#     # Get the file path before deleting
+#     cursor.execute("SELECT file_path FROM gallery WHERE id = ?", (image_id,))
+#     image_data = cursor.fetchone()
+    
+#     if image_data:
+#         image_path = os.path.join("static", image_data[0])
+#         if os.path.exists(image_path):
+#             os.remove(image_path)
+
+#         cursor.execute("DELETE FROM gallery WHERE id = ?", (image_id,))
+#         conn.commit()
+    
+#     conn.close()
+#     return redirect(url_for('gallery'))
+@app.route('/delete-image/<int:image_id>', methods=['DELETE'])
 def delete_image(image_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -590,15 +614,18 @@ def delete_image(image_id):
     image_data = cursor.fetchone()
     
     if image_data:
-        image_path = os.path.join("static", image_data[0])
+        image_path = os.path.join(app.static_folder, image_data[0])
         if os.path.exists(image_path):
-            os.remove(image_path)
+            os.remove(image_path)  # ✅ Delete the image file
 
         cursor.execute("DELETE FROM gallery WHERE id = ?", (image_id,))
         conn.commit()
+        conn.close()
+
+        return jsonify({"success": True, "message": "Image deleted successfully!"})
     
     conn.close()
-    return redirect(url_for('gallery'))
+    return jsonify({"success": False, "error": "Image not found!"})
 
 
 @app.route('/contact')

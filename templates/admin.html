@@ -185,17 +185,17 @@
         <tbody>
             {% for image in gallery_images %}
             <tr>
-                <td>{{ image.title }}</td>
-                <td>{{ image.description }}</td>
+                <td>{{ image[1] }}</td> <!-- Title -->
+                <td>{{ image[2] }}</td> <!-- Description -->
                 <td>
-                    <form action="{{ url_for('delete_image', image_id=image.id) }}" method="POST">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ image[0] }}">Delete</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
+        
     </table>
+    
 </div>
 
             

@@ -202,3 +202,33 @@ function deleteEvent(eventId) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const imageId = this.getAttribute("data-id");
+            deleteImage(imageId);
+        });
+    });
+});
+
+function deleteImage(imageId) {
+    if (!confirm("Are you sure you want to delete this image?")) return;
+
+    fetch(`/delete-image/${imageId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Image deleted successfully!");
+            location.reload(); // ✅ Refresh after deletion
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
