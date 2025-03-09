@@ -232,3 +232,43 @@ function deleteImage(imageId) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+//news
+window.scrollToSection = function(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+        console.error("Section not found:", sectionId);
+    }
+};
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-news-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const newsId = this.getAttribute("data-id");
+            deleteNews(newsId);
+        });
+    });
+});
+
+function deleteNews(newsId) {
+    if (!confirm("Are you sure you want to delete this news article?")) return;
+
+    fetch(`/delete-news/${newsId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("News deleted successfully!");
+            location.reload();
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}

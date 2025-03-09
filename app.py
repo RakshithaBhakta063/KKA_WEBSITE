@@ -236,6 +236,7 @@ def upload_content():
             flash("Content uploaded successfully!", "success")
         else:
             flash("Invalid file type!", "danger")
+            
 
     return redirect(url_for('admin_panel'))
 
@@ -426,6 +427,14 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         cursor.execute("SELECT id, title, description, file_path FROM gallery")
         gallery_images = cursor.fetchall()
 
+         # Fetch news articles
+    cursor.execute("SELECT id, title, description FROM news ORDER BY id DESC")
+    news_articles = cursor.fetchall()
+    conn.close()
+
+    formatted_news = [{"id": row[0], "title": row[1], "description": row[2]} for row in news_articles]
+
+
     return render_template(
         "admin.html",
         registrations=registrations,
@@ -436,7 +445,8 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         total_event_registrations=total_event_registrations,
         event_chart_data=event_chart_data,
         event_city_chart_data=event_city_chart_data,
-        gallery_images=gallery_images
+        gallery_images=gallery_images,
+        news_articles=formatted_news
     )
 
 
@@ -700,7 +710,8 @@ def upload_news():
         conn.commit()
         conn.close()
 
-        return redirect(url_for("upload_news"))  # Redirect back to admin panel
+        # return redirect(url_for("upload_news"))  # Redirect back to admin panel
+        return redirect(url_for("news"))
     
     
 @app.route("/admin")
@@ -745,30 +756,17 @@ def news_details(news_id):
 
 
 # Delete News Article
-@app.route("/delete/<int:news_id>", methods=["POST"])
+@app.route("/delete-news/<int:news_id>", methods=["DELETE"])
 def delete_news(news_id):
-    conn = get_db_connection()
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
-    # Delete images from storage
-    images = conn.execute("SELECT image_path FROM news_images WHERE news_id = ?", (news_id,)).fetchall()
-    for image in images:
-        image_path = os.path.join(app.config["UPLOAD_FOLDER"], image["image_path"])
-        if os.path.exists(image_path):
-            os.remove(image_path)
-
-    # Delete news and images from database
-    conn.execute("DELETE FROM news WHERE id = ?", (news_id,))
-    conn.execute("DELETE FROM news_images WHERE news_id = ?", (news_id,))
+    # Delete the news entry
+    cursor.execute("DELETE FROM news WHERE id = ?", (news_id,))
     conn.commit()
     conn.close()
 
-    return redirect(url_for("upload_news"))
-
-
-
-
-
-
+    return jsonify({"success": True, "message": "News deleted successfully!"})
 
 
 @app.route('/contact')

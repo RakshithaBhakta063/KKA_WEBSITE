@@ -31,6 +31,7 @@
 <button class="tab-button" onclick="scrollToSection('Dashboard')">Dashboard</button>
 <button class="tab-button" onclick="scrollToSection('Content Management')">Content Management</button>
 <button class="tab-button" onclick="scrollToSection('galleryManagement')">Gallery Management</button>
+<button class="tab-button" onclick="scrollToSection('newsManagement')">News Management</button>
 <button class="tab-button" onclick="scrollToSection('registrations')">Registrations</button>
 
 
@@ -224,38 +225,19 @@
             <tr>
                 <th>Title</th>
                 <th>Description</th>
-                <th>Images</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            {% if news_articles %}
-                {% for news in news_articles %}
-                <tr>
-                    <td>{{ news.title }}</td>
-                    <td>{{ news.description }}</td>
-                    <td>
-                        {% if news.images %}
-                            {% set images = news.images.split(',') %}
-                            {% for image in images %}
-                                <img src="{{ url_for('static', filename='uploads/' + image.strip()) }}" width="100">
-                            {% endfor %}
-                        {% else %}
-                            No Image
-                        {% endif %}
-                    </td>
-                    <td>
-                        <form action="{{ url_for('delete_news', news_id=news.id) }}" method="post">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4">No news available</td>
-                </tr>
-            {% endif %}
+            {% for news in news_articles %}
+            <tr>
+                <td>{{ news.title }}</td>
+                <td>{{ news.description }}</td>
+                <td>
+                    <button class="delete-news-btn" data-id="{{ news.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
