@@ -272,3 +272,33 @@ function deleteNews(newsId) {
     })
     .catch(error => console.error("Error:", error));
 }
+
+
+window.scrollToSection = function(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+        console.error("Section not found:", sectionId);
+    }
+};
+
+
+function deleteEvent(eventId) {
+    if (!confirm("Are you sure you want to delete this event?")) return;
+
+    fetch(`/delete-event/${eventId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Event deleted successfully!");
+            location.reload();
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}

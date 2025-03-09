@@ -384,8 +384,8 @@ LEFT JOIN family_details f ON u.user_id = f.user_id;
         cursor.execute("SELECT event_id, title, description FROM events WHERE category='upcoming' ORDER BY uploaded_at DESC")
         upcoming_events = cursor.fetchall()
 
-        # Fetch past events
-        cursor.execute("SELECT title, description, file_path FROM events WHERE category='past' ORDER BY uploaded_at DESC")
+         # Fetch past events
+        cursor.execute("SELECT title, description, event_id FROM events WHERE category='past' ORDER BY uploaded_at DESC")
         past_events = cursor.fetchall()
 
         # Fetch event registrations with event details
@@ -773,25 +773,25 @@ def delete_news(news_id):
 def contact():
     return render_template('contact.html')
 
-@app.route('/delete-event', methods=['POST'])
-def delete_event():
-    try:
-        data = request.json
-        event_id = data.get('id')
-        if not event_id:
-            return jsonify({"success": False, "error": "No event ID provided."})
+# @app.route('/delete-event', methods=['POST'])
+# def delete_event():
+#     try:
+#         data = request.json
+#         event_id = data.get('id')
+#         if not event_id:
+#             return jsonify({"success": False, "error": "No event ID provided."})
 
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM events WHERE event_id = ?", (event_id,))
-        conn.commit()
-        conn.close()
+#         conn = sqlite3.connect(DB_PATH)
+#         cursor = conn.cursor()
+#         cursor.execute("DELETE FROM events WHERE event_id = ?", (event_id,))
+#         conn.commit()
+#         conn.close()
 
-        return jsonify({"success": True, "message": "Event deleted successfully!"})
+#         return jsonify({"success": True, "message": "Event deleted successfully!"})
 
-    except Exception as e:
-        print("Delete Event Error:", str(e))
-        return jsonify({"success": False, "error": str(e)})
+#     except Exception as e:
+#         print("Delete Event Error:", str(e))
+#         return jsonify({"success": False, "error": str(e)})
 
 
 @app.route('/profile')
@@ -896,6 +896,16 @@ def get_user_details():
     else:
         return jsonify({"success": False, "message": "User not found"}), 404
 
+@app.route('/delete-event/<int:event_id>', methods=['DELETE'])
+def delete_event(event_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM events WHERE event_id = ?", (event_id,))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True, "message": "Event deleted successfully!"})
 
 
 
