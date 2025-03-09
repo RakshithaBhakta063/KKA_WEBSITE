@@ -60,36 +60,24 @@
         </section>
     </section>
     
-    <!-- Team Section -->
     <body>
-        <div class="container">
-            <h1>MAI SO KUSWAR</h1>
-    
-            <!-- Main Image Section -->
-            <div class="main-image">
-                <img src="{{ url_for('static', filename='images/N1.png') }}" alt="Main Event Image">
-            </div>
-    
-            <!-- Image Gallery -->
-            <div class="gallery">
-                <img src="{{ url_for('static', filename='images/N2.png') }}" alt="Gallery Image 1">
-                <img src="{{ url_for('static', filename='images/N3.png') }}" alt="Gallery Image 2">
-            </div>
-    
-            <!-- Content Section -->
-            <div class="content">
-                <p><strong>“Christmas”</strong>and <strong>“Kuswar”</strong> are two words that go hand in hand. When you live outside of India, more often than not, you only remember the good old days where parents, grandparents, children, neighbours all came together to prepare Kuswar during the yuletide season. Karaval Konkans Australia (KKA) therefore decided to break away from this and bring those memories back to life in Melbourne, Australia.
-                 </p>
-                <p>Mai So Kuswar – a unique workshop was organised by Karaval Konkans Australia on 23 Nov 2024 at Melbourne, Australia. This was a one-day event, completely free of charges, with the primary focus of teaching children and adults alike to live those beautiful memories, learn new recipes, prepare Kuswar together as one big family, and thus build a bond that is based on love and caring for each other.
-                 </p>
-                <p>The event began with a small prayer from the Spiritual Director, Rev Fr. Jacob Alvares. The chief guest for the day was Mira D’Silva - An entrepreneur and the first Mangalorean Catholic to venture into Australian politics, Mira  is a passionate advocate for the Konkani language and community. Mira kneaded the first dough for the day with flour and coconut milk to symbolically commence the workshop. This was followed by formally giving the first chef apron for the day to Mrs. Celine D’Souza (Celly Bai/Aunty) under whose stewardship the entire workshop was conducted.</p>
-                <p>Following this was a traditional home-made breakfast of golibajje and chutney, that had every attendee wanting more. During the first half of the day, all attendees learnt recipes, basic ingredients, kneading dough and beginning to prepare traditional Kuswar – Gulio, Kidyo, Newryo, Chaklis among others. It was so wonderful to see kids as young as three also immersed in making these sweets. Despite it being a hot day, the non-stop supply of binda and limbo sharbat kept everyone hydrated and happy. A simple home cooked lunch was prepared and served to all present and had everyone returning for more helpings.</p>
-                <p>While Kuswar preparation continued after lunch, some of the attendees moved to fry the ready Kuswar.  The success of the workshop was demonstrated by over a hundred attendees most of who stayed on for the whole day despite having other plans and priorities.   This workshop was a precursor to the “Ek Nathlaanchi Saanz” that will be held on 15 December 2024. Kuswar prepared at the workshop will be distributed to all attending families as a symbolic gesture of love, sharing and family. </p>
-                <p>Kids and parents alike have voiced their joy and happiness at this very unique event. Kids were happy to be involved in the entire sweet making process and parents expressed their tremendous appreciation to the KKA Committee for making sure that children learn the value of our language, heritage, culture and traditions despite being assimilated in the Aussie culture.  Given the response to this event, the committee is already committed to repeating this event next year and have more people involved.</p>
-                <p>This event would not have been possible without the support of sponsors and well-wishers who have contributed with their presence, financial assistance and so many individuals behind the scenes to make this successful. The committee expresses its thanks to everyone who attended the event as well all sponsors and well-wishers for making this a very successful event.
-                <p><strong>Karaval Konkans Australia </strong>is an organisation that has been created to keep Konkani and its traditions alive in Australia from our generations to the next. There are no membership fees for joining this organisation rather the committee wants people to be connected to the motive of their work and existence – enrich and nurture the love for Konkani, language, culture and heritage.
+     <h1>LATEST NEWS</h1>
+        <div class="main-wrapper">
+            <div class="news-container">
+                {% for news_item in news %}
+                <div class="news-item">
+                    <h2>{{ news_item['title'] }}</h2>
+                    <p>{{ news_item['description'] }}</p>
+                    
+                    <img src="{{ url_for('static', filename='uploads/' + news_item['images'][0]) }}" width="300">
+        
+                    <br>
+                    <a href="{{ url_for('news_details', news_id=news_item['id']) }}" class="read-more-btn">Read More</a>
+                </div>
+                {% endfor %}
             </div>
         </div>
+        
     
     <!-- Footer -->
     <section>
@@ -139,3 +127,4 @@
 
 </body>
 </html>
+news.html

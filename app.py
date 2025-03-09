@@ -81,8 +81,11 @@ def init_db():
     description TEXT NOT NULL,
     file_path TEXT NOT NULL
     );
+    
+                     
 
     ''')
+
     # Insert admin user if not exists
     cursor.execute("SELECT * FROM admins WHERE email = ?", ("info@karavalkonkans.org.au",))
     if not cursor.fetchone():
@@ -549,9 +552,7 @@ def index():
 def aboutus():
     return render_template('aboutus.html')
 
-@app.route('/news')
-def news():
-    return render_template('news.html')
+
 
 @app.route('/gallery')
 def gallery():
@@ -626,6 +627,148 @@ def delete_image(image_id):
     
     conn.close()
     return jsonify({"success": False, "error": "Image not found!"})
+
+
+import os
+
+uploads_folder = "static/uploads"
+for file in os.listdir(uploads_folder):
+    print(file)
+# Connect to the database
+def get_db_connection():
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# News page (List all news)
+@app.route("/")
+@app.route("/news")
+def news():
+    conn = get_db_connection()
+    
+    # Fetch news with images
+    news_articles = conn.execute("""
+        SELECT n.id, n.title, n.description, GROUP_CONCAT(i.image_filename) AS images
+        FROM news n
+        LEFT JOIN news_images i ON n.id = i.news_id
+        GROUP BY n.id ORDER BY n.id DESC
+    """).fetchall()
+    
+    conn.close()
+
+    # Convert images column to lists
+    formatted_news = []
+    for news in news_articles:
+        formatted_news.append({
+            "id": news["id"],
+            "title": news["title"],
+            "description": news["description"],
+            "images": news["images"].split(",") if news["images"] else []
+        })
+
+    return render_template("news.html", news=formatted_news)
+
+
+# Admin Panel (Upload News)
+@app.route("/admin", methods=["GET", "POST"])
+def upload_news():
+    if request.method == "POST":
+        title = request.form["title"]
+        description = request.form["description"]
+        content = request.form["content"]
+        images = request.files.getlist("images")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Insert news article into 'news' table
+        cursor.execute("INSERT INTO news (title, description, content) VALUES (?, ?, ?)", 
+                       (title, description, content))
+        news_id = cursor.lastrowid  # Get the last inserted news ID
+
+        # Save images & insert file paths
+        for image in images:
+            if image and image.filename:
+                filename = f"{news_id}_{image.filename}"
+                filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                image.save(filepath)
+
+                # Insert image filename into 'news_images' table
+                cursor.execute("INSERT INTO news_images (news_id, image_filename) VALUES (?, ?)", 
+                               (news_id, filename))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("upload_news"))  # Redirect back to admin panel
+    
+    
+@app.route("/admin")
+def admin_portal():
+    conn = get_db_connection()
+    news_articles = conn.execute("""
+        SELECT n.id, n.title, n.description, 
+               COALESCE(GROUP_CONCAT(i.image_filename), '') AS images
+        FROM news n
+        LEFT JOIN news_images i ON n.id = i.news_id
+        GROUP BY n.id ORDER BY n.id DESC
+    """).fetchall()
+    conn.close()
+
+    # Convert images column to lists
+    formatted_news = []
+    for news in news_articles:
+        print(news)  # ✅ Debugging: Print each news entry
+        formatted_news.append({
+            "id": news["id"],
+            "title": news["title"],
+            "description": news["description"],
+            "images": news["images"].split(",") if news["images"] else []  # Fix: Ensure images are a list
+        })
+
+    print("Formatted News:", formatted_news)  # ✅ Check output in console
+
+    return render_template("admin.html", news_articles=formatted_news)  # Fix: Pass formatted_news instead
+
+
+
+
+# News details page
+@app.route("/news/<int:news_id>")
+def news_details(news_id):
+    conn = get_db_connection()
+    news_item = conn.execute("SELECT * FROM news WHERE id = ?", (news_id,)).fetchone()
+    images = conn.execute("SELECT image_filename FROM news_images WHERE news_id = ?", (news_id,)).fetchall()
+    conn.close()
+
+    return render_template("news_details.html", news=news_item, images=images)
+
+
+# Delete News Article
+@app.route("/delete/<int:news_id>", methods=["POST"])
+def delete_news(news_id):
+    conn = get_db_connection()
+
+    # Delete images from storage
+    images = conn.execute("SELECT image_path FROM news_images WHERE news_id = ?", (news_id,)).fetchall()
+    for image in images:
+        image_path = os.path.join(app.config["UPLOAD_FOLDER"], image["image_path"])
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+    # Delete news and images from database
+    conn.execute("DELETE FROM news WHERE id = ?", (news_id,))
+    conn.execute("DELETE FROM news_images WHERE news_id = ?", (news_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("upload_news"))
+
+
+
+
+
+
 
 
 @app.route('/contact')
