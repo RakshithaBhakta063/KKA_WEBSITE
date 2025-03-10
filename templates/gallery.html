@@ -36,7 +36,7 @@
 
     <!-- Main Section -->
     <section id="mainhead">
-        <div id="popup" class="popup-container">
+        <div id="popup" class="popup-container" style="display: none;">
             <div class="popup-content">
                 <p id="poppy">Are you already a part of the family?</p>
                 <button onclick="alreadyMember()">Yes</button>
@@ -48,6 +48,7 @@
 
     <!-- Hero Section -->
     <section class="hero" style="background-image: url('/static/images/bck.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <h2>ಗ್ಯಾಲರಿ</h2>
         <h2>Gallery</h2>
         <p>Explore our events and activities that celebrate our Konkani culture and community.</p>
         <div class="carousel">
@@ -78,7 +79,9 @@
         {% endif %}
     </section>
     
-    
+    <div class="sponsors-wrapper">
+        {% include 'sponsors.html' %}
+    </div>
     
 
     <!-- Footer Section -->
@@ -113,6 +116,7 @@
                 <div class="footer-column2">
                     <h3>Contact Us</h3>
                     <p>Email: <a href="mailto:info@karavalkonkans.org.au">info@karavalkonkans.org.au</a></p>
+                    <a href="{{ url_for('contact') }}">Contact Us</a>
                 </div>
 
                 <!-- Copyright -->

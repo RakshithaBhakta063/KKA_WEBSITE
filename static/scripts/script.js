@@ -175,7 +175,12 @@ function notMember() {
     window.location.href = "/register"; 
 }
 
-
+document.addEventListener("DOMContentLoaded", function () {
+    const list = document.querySelector(".our-partners-list"); // Updated class name
+    if (list) {
+        list.innerHTML += list.innerHTML; // Duplicate logos for smooth loop
+    }
+});
 
 
 //register

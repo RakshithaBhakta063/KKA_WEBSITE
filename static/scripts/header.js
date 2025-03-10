@@ -90,13 +90,13 @@ class CustomNavbar extends HTMLElement {
         });
 
         // Close menu when clicking "Join" on mobile
-        if (joinButton) {
-            joinButton.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    navLinks.classList.remove('active');
-                }
-            });
-        }
+        // if (joinButton) {
+        //     joinButton.addEventListener('click', () => {
+        //         if (window.innerWidth <= 768) {
+        //             navLinks.classList.remove('active');
+        //         }
+        //     });
+        // }
 
         // Contact page event listener (Scroll or Redirect)
         if (contactLink) {
@@ -124,6 +124,41 @@ class CustomNavbar extends HTMLElement {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("popup");
+    const joinButton = document.querySelector(".join-button");
+    const closeButton = document.querySelector(".close-btn");
+
+    if (popup) {
+        popup.style.display = "none"; // Ensure it's hidden on page load
+    }
+
+    if (joinButton) {
+        joinButton.addEventListener("click", function () {
+            popup.style.display = "flex"; // Show the popup when Join is clicked
+        });
+    }
+
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            popup.style.display = "none"; // Hide popup on close
+        });
+    }
+});
+
+function alreadyMember() {
+    closePopup();
+    window.location.href = "/login";
+}
+
+function notMember() {
+    closePopup();
+    window.location.href = "/register";
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
 
 // Define the custom element
 customElements.define("custom-navbar", CustomNavbar);

@@ -7,8 +7,16 @@
 }
 
 /* Prevent Content Overlap */
+/* html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: white;
+} */
+
 body {
-    background-color: #121212;
+    background-color: black;
     color: white;
     padding-top: 80px;
 }
@@ -138,5 +146,41 @@ body {
         position: static;
         background-color: black;
         width: 100%;
+    }
+}
+.sponsors {
+    text-align: center;
+    padding: 20px;
+    background-color: #111;
+    color: white;
+}
+
+.sponsors-container {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    padding: 20px 0;
+}
+
+.sponsors-list {
+    display: flex;
+    width: max-content;
+    animation: scroll 10s linear infinite;
+}
+
+.sponsors-list img {
+    width: 150px; /* Uniform size */
+    height: 150px;
+    object-fit: contain;
+    margin: 0 15px; /* Spacing between logos */
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
     }
 }

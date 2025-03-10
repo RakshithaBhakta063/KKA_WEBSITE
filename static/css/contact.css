@@ -4,6 +4,13 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
 }
+html{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: black; /* Unified background */
+    color: white;
+}
 
 /* Navbar */
 .navbar {
@@ -43,16 +50,69 @@ nav ul li a {
 }
 
 /* Hero Section */
-.hero {
+/* .hero {
     position: relative;
-    background: url('../images/bck.png') no-repeat center center/cover;
-    height: 350px;
+    width: 100%;
+    height: 100vh; 
+    min-height: 800px; 
+    background: url('/static/images/bck.png') no-repeat center center/cover !important;
+    background-attachment: fixed; 
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color:#ffc342;
+    color: #ffc342;
+    background-size: contain !important;
+    overflow: hidden;
+} */
+/* .hero {
+    background: url('/static/images/bck.png') no-repeat center center/cover !important;
+    background: rgba(0, 0, 0, 0.7); 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100vh;
+    color: #ffc342;
+    padding-top: 80px;
+} */
+
+/* .hero{
+    background: url('/static/images/bck.png') no-repeat center center/cover !important; 
+} */
+/* .hero img {
+    width: 100%; 
+    height: auto; 
+    object-fit: contain;
+    max-height: 500px;
+    display: block; 
+    margin: 0 auto; 
+    background: url('/static/images/bck.png') no-repeat center center/cover !important; 
+} */
+/* Hero Section - Ensuring Consistent Image Size */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh; 
+    min-height: 800px;
+    background: url('/static/images/bck.png') no-repeat center center/cover;
+    background-attachment: fixed; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffc342;
+    overflow: hidden;
 }
+
+.hero img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+}
+
 
  h1 {
     font-size: 40px;
@@ -70,9 +130,9 @@ nav ul li a {
     font-size: 18px;
     color:#ffc342 !important;
 }
-.heroic{
+/* .heroic{
     color:#ffc342 !important;
-}
+} */
 
 
 

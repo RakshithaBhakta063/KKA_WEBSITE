@@ -1,5 +1,18 @@
 /* Ensure the body takes full width and centers everything */
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: black; /* Unified background */
+}
 
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: white; /* Set background to white */
+    color: black; /* Ensure text is visible on a white background */
+}
 
 /* Center the entire news section */
 .news-container {

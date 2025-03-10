@@ -101,7 +101,7 @@ button:hover {
     background-color:#ffc342;
 }
 
-#popup {
+/* #popup {
     display: none;
     position: fixed;
     top: 0;
@@ -111,16 +111,39 @@ button:hover {
     background: rgba(0, 0, 0, 0.6);
     justify-content: center;
     align-items: center;
+} */
+
+/* Ensure Popup is on Top */
+/* Ensure popup stays hidden until triggered */
+#popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; /* Ensure it starts hidden */
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
 }
 
 .popup-content {
     background: white;
-    padding: 40px;
+    color: black;
+    padding: 30px;
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.5s;
+    width: 80%;
+    max-width: 400px;
+    z-index: 3100;
 }
+
+/* Ensure popup appears correctly when visible */
+.popup-show {
+    display: flex !important; /* Override any hidden styles */
+}
+
 
 @keyframes fadeIn {
     from {
@@ -334,28 +357,29 @@ button:hover {
 }
 
 /* Popup Style */
-#popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 900px; /* Set the width of the popup */
-    height: 500px; /* Fixed height */
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    padding: 30px;
+/* Popup Container */
+.popup-container {
+    position: fixed; /* Keep it on top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Dark overlay */
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    z-index: 2000; /* Higher than other elements */
 }
 
 /* Popup Content */
 .popup-content {
-    width: 100%; /* Ensure content fits the popup */
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
 }
 
 /* Button Group */
@@ -471,5 +495,60 @@ form {
     #loginSubmit {
         width: 100%;
         margin: 0;
+    }
+}
+/* .sponsors {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f8f8f8;
+}
+
+.sponsors h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.sponsors-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.sponsor img {
+    max-width: 150px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.sponsor img:hover {
+    transform: scale(1.1);
+} */
+ 
+.sponsor-container {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sponsor-wrapper {
+    display: flex;
+    animation: scroll 10s linear infinite;
+}
+
+.sponsor-wrapper img {
+    width: 150px; /* Adjust as needed */
+    height: 150px; /* Keep it square */
+    object-fit: contain; /* Ensures the entire logo fits */
+    margin: 10px;
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
     }
 }

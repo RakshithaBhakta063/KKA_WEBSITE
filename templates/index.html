@@ -34,7 +34,7 @@
 
     <section id="mainhead">
        
-        <div id="popup" class="popup-container">
+        <div id="popup" class="popup-container" style="display: none;">
             <div class="popup-content">
                 <p id="poppy">Are you already a part of the family?</p>
                 <button onclick="alreadyMember()">Yes</button>
@@ -83,12 +83,29 @@
                 </div>
             </div>
         </section>
-    
+        <!-- <section class="sponsors">
+            <h2>Our Sponsors</h2>
+            <div class="sponsors-container">
+                <div class="sponsors-list">
+                    <img src="{{ url_for('static', filename='images/sponsor1.jpg') }}" alt="Sponsor 1">
+                    <img src="{{ url_for('static', filename='images/sponsor2.jpg') }}" alt="Sponsor 2">
+                    <img src="{{ url_for('static', filename='images/sponsor3.jpeg') }}" alt="Sponsor 3">
+                   
+                    <!<img src="{{ url_for('static', filename='images/sponsor1.jpg') }}" alt="Sponsor 1">
+                    <img src="{{ url_for('static', filename='images/sponsor2.jpg') }}" alt="Sponsor 2">
+                    <img src="{{ url_for('static', filename='images/sponsor3.jpeg') }}" alt="Sponsor 3">
+                </div>
+            </div>
+        </section> -->
+         
+        {% include 'sponsors.html' %}
+  
+        
     <section>
         <div class="container1">
             <footer class="footer">
                 <div class="footer-column">
-                    <img src="../images/2 2.png" alt="Karaval Konkans Logo">
+                    <img src="{{ url_for('static', filename='images/1.png') }}" alt="Karaval Konkans Logo">
                     <p>Karaval Konkans Australia is a not-for-profit community organization formed in October 2024 with an intention to unite all Konkani-speaking people from Karaval India.</p>
                     <div class="social-icons">
                         <a href="#"><i class="mdi mdi-instagram"></i></a>

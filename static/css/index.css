@@ -4,11 +4,10 @@
     box-sizing: border-box;
 }
 
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #ffffff;
-    color: #333;
+    color: black;
 }
 
 .admin-header {
@@ -134,7 +133,6 @@ th {
     font-weight: bold;
     text-transform: uppercase;
 }
-
 td {
     background-color: #fafafa;
     border-top: 1px solid #ddd;

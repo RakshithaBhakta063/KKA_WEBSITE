@@ -3,7 +3,13 @@ body {
     text-align: center;
     padding: 20px;
 }
-
+html{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: black; /* Unified background */
+    color: white;
+}
 .team-section h2 {
     font-size: 28px;
     font-weight: bold;
