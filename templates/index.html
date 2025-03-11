@@ -118,12 +118,11 @@
                 <div class="footer-column1">
                     <h3>Quick Links</h3>
                     <div class="footer-links">
-                        <a href="#">Home</a>
-                        <a href="#">About Us</a>
-                        <a href="#">News</a>
-                        <a href="#">Events</a>
-                        <a href="#">Contact Us</a>
-                </div>
+                        <a href="{{ url_for('home') }}">Home</a>
+                        <a href="{{ url_for('aboutus') }}">About Us</a>
+                        <a href="{{ url_for('news') }}">News</a>
+                        <a href="{{ url_for('contact') }}">Contact Us</a>
+                    </div>
                 </div>
     
                 <div class="footer-column2" id="footer">
