@@ -10,14 +10,17 @@
 </head>
 <body>
     <div class="container">
-        <h2 id="eventName">Event Registration</h2>
+        <h2 id="eventName">{{ event_title }}</h2>
 
         <form id="registrationForm" method="POST" action="{{ url_for('event_register', event_id=event_id) }}">
+
 
             <!-- <input type="hidden" id="eventInput" name="event_id" value="{{ event_id }}"> -->
             <input type="hidden" name="event_id" value="{{ event_id }}">
 
             <div class="form-group">
+                <!-- <h2 id="eventName">{{ event_title }}</h2> -->
+
                 <label for="name">Full Name:</label>
                 <input type="text" id="name" name="name" required>
             </div>

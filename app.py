@@ -1,5 +1,8 @@
 import os
 import sqlite3
+from flask import send_file
+import pandas as pd
+from fpdf import FPDF
 from flask import jsonify
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -280,7 +283,19 @@ def event_register(event_id):
     # Fetch user details from the session user_id
     cursor.execute("SELECT name, email, phone FROM users WHERE user_id = ?", (session['user_id'],))
     user = cursor.fetchone()
+
+    # Fetch event title from the database
+    cursor.execute("SELECT title FROM events WHERE event_id = ?", (event_id,))
+    event = cursor.fetchone()
+
     conn.close()
+
+    if not event:
+        flash("Event not found!", "danger")
+        return redirect(url_for('home'))
+
+    event_title = event[0]  # Extract event title
+
     if request.method == 'POST':  #  Ensure POST request is handled
         name = request.form['name']
         email = request.form['email']
@@ -304,6 +319,14 @@ def event_register(event_id):
         if db_name != name or db_email != email or db_phone != phone:
             conn.close()
             return jsonify({"success": False, "message": "Entered details do not match our records."}), 400
+        
+                # Check if user has already registered for this event
+        cursor.execute("SELECT COUNT(*) FROM event_registrations WHERE email = ? AND event_id = ?", (email, event_id))
+        existing_count = cursor.fetchone()[0]
+
+        if existing_count > 0:
+            conn.close()
+            return jsonify({"success": False, "message": "You have already registered for this event."}), 400
 
         # Save registration
         try:
@@ -322,7 +345,7 @@ def event_register(event_id):
             return jsonify({"success": False, "message": "Registration failed. Please try again later."}), 500
 
     #  Ensure GET requests return the registration form
-    return render_template('EventReg.html', event_id=event_id)
+    return render_template('EventReg.html', event_id=event_id, event_title=event_title)
 
 
 
@@ -489,43 +512,213 @@ def fetch_event_registrations():
         for reg in event_registrations
     ])
 
-@app.route('/get-event-registrations')
-def get_event_registrations():
+# @app.route('/get-event-registrations')
+# def get_event_registrations():
+#     if 'admin_id' not in session:
+#         return jsonify({"error": "Unauthorized"}), 403
+
+#     conn = sqlite3.connect(DB_PATH)
+#     cursor = conn.cursor()
+
+#     # Fetch all event registrations with event details
+#     query = '''
+#     SELECT er.registration_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children, 
+#            e.event_id, e.title
+#     FROM event_registrations er
+#     JOIN events e ON er.event_id = e.event_id
+#     ORDER BY er.registration_id DESC
+#     '''
+    
+#     cursor.execute(query)
+#     event_registrations = cursor.fetchall()
+    
+#     conn.close()
+
+#     # Convert list of tuples into JSON format
+#     return jsonify([
+#         {
+#             "registration_id": reg[0],
+#             "name": reg[1],
+#             "email": reg[2],
+#             "phone": reg[3],
+#             "num_people": reg[4],
+#             "adults": reg[5],
+#             "children": reg[6],
+#             "event_id": reg[7],
+#             "event_title": reg[8]
+#         } 
+#         for reg in event_registrations
+#     ])
+@app.route('/get-all-event-registrations')
+def get_all_event_registrations():
     if 'admin_id' not in session:
         return jsonify({"error": "Unauthorized"}), 403
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Fetch all event registrations with event details
+    # Fetch registrations grouped by event
     query = '''
-    SELECT er.registration_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children, 
-           e.event_id, e.title
+    SELECT e.event_id, e.title, er.name, er.email, er.phone, er.num_people, er.adults, er.children
     FROM event_registrations er
     JOIN events e ON er.event_id = e.event_id
-    ORDER BY er.registration_id DESC
+    ORDER BY e.event_id
     '''
     
     cursor.execute(query)
     event_registrations = cursor.fetchall()
-    
     conn.close()
 
-    # Convert list of tuples into JSON format
-    return jsonify([
-        {
-            "registration_id": reg[0],
-            "name": reg[1],
-            "email": reg[2],
-            "phone": reg[3],
-            "num_people": reg[4],
-            "adults": reg[5],
-            "children": reg[6],
-            "event_id": reg[7],
-            "event_title": reg[8]
-        } 
-        for reg in event_registrations
-    ])
+    event_dict = {}
+    for reg in event_registrations:
+        event_id, title, name, email, phone, num_people, adults, children = reg
+        if event_id not in event_dict:
+            event_dict[event_id] = {"title": title, "registrations": []}
+        event_dict[event_id]["registrations"].append({
+            "name": name, "email": email, "phone": phone,
+            "num_people": num_people, "adults": adults, "children": children
+        })
+
+    return jsonify(event_dict)
+
+@app.route('/export-upcoming-event-registrations/<int:event_id>')
+def export_upcoming_event_registrations(event_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Fetch registrations including user_id
+    cursor.execute('''
+        SELECT e.title, u.user_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children
+        FROM event_registrations er
+        JOIN events e ON er.event_id = e.event_id
+        JOIN users u ON er.email = u.email
+        WHERE e.event_id = ? AND e.category = 'upcoming'
+    ''', (event_id,))
+    
+    registrations = cursor.fetchall()
+    conn.close()
+
+    if not registrations:
+        return jsonify({"error": "No registrations found for this upcoming event"}), 404
+
+    event_title = registrations[0][0].replace(" ", "_")  # Sanitize filename
+
+    # Ensure directory exists
+    reports_dir = "static/reports"
+    os.makedirs(reports_dir, exist_ok=True)
+
+    file_path = os.path.join(reports_dir, f"{event_title}_registrations.pdf")
+
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", style="B", size=16)
+    pdf.cell(200, 10, f"Upcoming Event: {event_title}", ln=True, align="C")
+    pdf.ln(10)
+
+    # pdf.set_font("Arial", size=12)
+    # pdf.cell(30, 10, "User ID", border=1)
+    # pdf.cell(40, 10, "Name", border=1)
+    # pdf.cell(50, 10, "Email", border=1)
+    # pdf.cell(30, 10, "Phone", border=1)
+    # pdf.cell(20, 10, "People", border=1)
+    # pdf.cell(20, 10, "Adults", border=1)
+    # pdf.cell(20, 10, "Children", border=1)
+    # pdf.ln()
+
+    # pdf.set_font("Arial", size=10)
+    # for row in registrations:
+    #     formatted_user_id = f"KKA{row[1]}"  # Convert user ID to KKA format
+    #     pdf.cell(30, 10, formatted_user_id, border=1)  # User ID
+    #     pdf.cell(40, 10, row[2], border=1)  # Name
+    #     pdf.cell(50, 10, row[3], border=1)  # Email
+    #     pdf.cell(30, 10, row[4], border=1)  # Phone
+    #     pdf.cell(20, 10, str(row[5]), border=1)  # People
+    #     pdf.cell(20, 10, str(row[6]), border=1)  # Adults
+    #     pdf.cell(20, 10, str(row[7]), border=1)  # Children
+    #     pdf.ln()
+
+    # pdf.output(file_path)
+
+    # return send_file(file_path, as_attachment=True)
+    pdf.set_font("Arial", size=12)
+
+    # Adjust column widths to fit the page properly
+    column_widths = [25, 35, 50, 35, 15, 15, 15]  # Adjusted sizes for uniform spacing
+
+    headers = ["User ID", "Name", "Email", "Phone", "People", "Adults", "Children"]
+
+    # Print headers
+    for i in range(len(headers)):
+        pdf.cell(column_widths[i], 10, headers[i], border=1, align="C")
+
+    pdf.ln()
+
+    pdf.set_font("Arial", size=10)
+    for row in registrations:
+        formatted_user_id = f"KKA{row[1]}"  # Convert user ID to KKA format
+        data = [formatted_user_id, row[2], row[3], row[4], str(row[5]), str(row[6]), str(row[7])]
+        
+        for i in range(len(data)):
+            pdf.cell(column_widths[i], 10, data[i], border=1, align="C")
+
+        pdf.ln()
+
+    pdf.output(file_path)
+
+    return send_file(file_path, as_attachment=True)
+
+@app.route('/check-event-category/<int:event_id>')
+def check_event_category(event_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT category FROM events WHERE event_id = ?", (event_id,))
+    event = cursor.fetchone()
+    conn.close()
+    return jsonify({"category": event[0] if event else "unknown"})
+
+@app.route('/get-upcoming-event-registrations')
+def get_upcoming_event_registrations():
+    if 'admin_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Fetch registrations grouped by event (only upcoming events), including user_id
+    query = '''
+    SELECT e.event_id, e.title, u.user_id, er.name, er.email, er.phone, er.num_people, er.adults, er.children
+    FROM event_registrations er
+    JOIN events e ON er.event_id = e.event_id
+    JOIN users u ON er.email = u.email
+    WHERE e.category = 'upcoming'
+    ORDER BY e.event_id
+    '''
+    
+    cursor.execute(query)
+    event_registrations = cursor.fetchall()
+    conn.close()
+
+    event_dict = {}
+    for reg in event_registrations:
+        event_id, title, user_id, name, email, phone, num_people, adults, children = reg
+        formatted_user_id = f"KKA{user_id}"  # Convert user ID to KKA format
+        
+        if event_id not in event_dict:
+            event_dict[event_id] = {"title": title, "registrations": []}
+        
+        event_dict[event_id]["registrations"].append({
+            "user_id": formatted_user_id,  # Add formatted User ID
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "num_people": num_people,
+            "adults": adults,
+            "children": children
+        })
+
+    return jsonify(event_dict)
+
 
 @app.route('/admin/data')
 def get_admin_data():
@@ -806,7 +999,7 @@ def profile():
 
     # Fetch user details
     cursor.execute('''
-        SELECT u.name, u.email, u.phone, f.nearest_city, f.details, f.num_children, 
+        SELECT u.user_id, u.name, u.email, u.phone, f.nearest_city, f.details, f.num_children, 
                GROUP_CONCAT(i.interest) AS interests
         FROM users u
         LEFT JOIN family_details f ON u.user_id = f.user_id
@@ -822,13 +1015,14 @@ def profile():
 
     # Convert tuple to dictionary
     user_info = {
-        "name": user_data[0],
-        "email": user_data[1],
-        "phone": user_data[2],
-        "nearest_city": user_data[3],
-        "details": user_data[4],
-        "num_children": user_data[5],
-        "interests": user_data[6] or ""
+        "user_id": f"KKA{user_data[0]}",
+        "name": user_data[1],
+        "email": user_data[2],
+        "phone": user_data[3],
+        "nearest_city": user_data[4],
+        "details": user_data[5],
+        "num_children": user_data[6],
+        "interests": user_data[7] or ""
     }
 
     # Fetch registered events
@@ -837,7 +1031,7 @@ def profile():
         FROM event_registrations er
         JOIN events e ON er.event_id = e.event_id
         WHERE er.email = ?
-    ''', (user_data[1],))
+    ''', (user_data[2],))
     user_events = [{"title": row[0], "date": row[1]} for row in cursor.fetchall()]
 
     conn.close()

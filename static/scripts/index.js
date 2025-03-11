@@ -302,3 +302,69 @@ function deleteEvent(eventId) {
     })
     .catch(error => console.error("Error:", error));
 }
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("/get-upcoming-event-registrations")
+        .then(response => response.json())
+        .then(events => {
+            const container = document.getElementById("eventRegistrationsContainer");
+            container.innerHTML = ""; // Clear previous data
+
+            for (const [eventId, eventData] of Object.entries(events)) {
+                let eventBlock = `
+                    <div class="event-block">
+                        <h4>${eventData.title}</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Total People</th>
+                                    <th>Adults</th>
+                                    <th>Children</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                eventData.registrations.forEach(reg => {
+                    eventBlock += `
+                        <tr>
+                            <td>${reg.user_id}</td>  <!-- Display formatted User ID -->
+                            <td>${reg.name}</td>
+                            <td>${reg.email}</td>
+                            <td>${reg.phone}</td>
+                            <td>${reg.num_people}</td>
+                            <td>${reg.adults}</td>
+                            <td>${reg.children}</td>
+                        </tr>
+                    `;
+                });
+
+                eventBlock += `
+                            </tbody>
+                        </table>
+                        <button onclick="exportUpcomingPDF(${eventId})">Export PDF</button>
+                    </div>
+                    <hr class="event-separator">  <!-- Adds a horizontal line between events -->
+                `;
+
+                container.innerHTML += eventBlock;
+            }
+        })
+        .catch(error => console.error("Error fetching upcoming event registrations:", error));
+});
+
+function exportUpcomingPDF(eventId) {
+    fetch(`/check-event-category/${eventId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.category === "upcoming") {
+                window.location.href = `/export-upcoming-event-registrations/${eventId}`;
+            } else {
+                alert("Export is only allowed for upcoming events!");
+            }
+        })
+        .catch(error => console.error("Error checking event category:", error));
+}

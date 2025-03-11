@@ -91,26 +91,24 @@ nav ul li a {
     background: url('/static/images/bck.png') no-repeat center center/cover !important; 
 } */
 /* Hero Section - Ensuring Consistent Image Size */
+/* Hero Section - Fixing Image Cropping */
 .hero {
     position: relative;
     width: 100%;
-    height: 100vh; 
-    min-height: 800px;
-    background: url('/static/images/bck.png') no-repeat center center/cover;
-    background-attachment: fixed; 
+    height: 100vh; /* Ensure consistency */
+    min-height: 900px;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('/static/images/bck.png') no-repeat center 40%;
+    background-size: cover !important;
+    background-attachment: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     text-align: center;
     color: #ffc342;
     overflow: hidden;
-}
-
-.hero img {
-    width: 100%;
-    height: auto;
-    max-height: 500px;
-    object-fit: contain;
+    padding: 80px 0;
 }
 
 

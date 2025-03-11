@@ -69,10 +69,10 @@
                         <h4>Total Registrations</h4>
                         <p id="totalUsers">{{ total_users }}</p> <!-- Updated -->
                     </div>
-                    <div class="analytics-card">
+                    <!-- <div class="analytics-card">
                         <h4>Total Event Registrations</h4>
-                        <p id="totalEventRegistrations">{{ total_event_registrations }}</p> <!-- Updated -->
-                    </div>
+                        <p id="totalEventRegistrations">{{ total_event_registrations }}</p> 
+                    </div> -->
                 </div>
 
                 <h3 style="margin-top: 20px;">Event-wise Registrations</h3>
@@ -114,7 +114,7 @@
                         <input type="text" id="title" name="title" required>
                 
                         <label>Description:</label>
-                        <textarea id="description" name="description"></textarea>
+                        <input type="text" id="description" name="description" required>
                 
                         <label>Category:</label>
                         <select name="category" required>
@@ -278,39 +278,12 @@
 
             
             <!-- Registrations Section -->
-            <div class="section" id="registrations">
-                <!-- <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event: Konkani Mai Bhas</h3> -->
-                <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Event Registrations</h3>
-                <table id="eventRegistrationTable">
-                    <thead>
-                        <tr>
-                            <!-- <th>Registration ID</th> -->
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Registered ID</th>
-                            <th>Event_ID</th>
-                            <th>Event Title</th>
-                            <!-- <th>Number of People</th>
-                            <th>Adults</th> -->
-                            <th>Number of People</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for reg in event_registrations %}
-                        <tr>
-                            <td>{{ reg[3] }}</td> <!-- Name -->
-            <td>{{ reg[4] }}</td> <!-- Email -->
-            <td>{{ reg[5] }}</td> <!-- Phone -->
-            <td>{{ reg[0] }}</td> <!-- Registration ID -->
-            <td>{{ reg[1] }}</td> <!-- Event ID -->
-            <td>{{ reg[2] }}</td> <!-- Event Title -->
-            <td>{{ reg[6] }}</td> <!-- Number of People -->
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    
-                </table>
+            <!-- Event Registrations for Upcoming Events -->
+<div class="section" id="registrations">
+    <h3 style="background-color: rgb(65, 63, 62); padding: 20px; color: white;">Upcoming Event Registrations</h3>
+    <div id="eventRegistrationsContainer"></div>
+</div>
+
 
                 
                 <!-- <input type="text" id="registrationSearch" placeholder="Search users" onkeyup="searchTable('registrationTable', 'registrationSearch')"> -->
